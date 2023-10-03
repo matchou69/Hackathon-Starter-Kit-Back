@@ -1,0 +1,69 @@
+version: "3.9"
+
+services:
+  postgres:
+    build:
+      context: ../shared/postgres
+    image: starter-postgres:dev
+    ports:
+      - "5432:5432"
+    networks:
+      - network
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    container_name: starter_postgres
+
+  adminer:
+    image: adminer
+    networks:
+      - network
+    ports:
+      - "8080:8080"
+
+  flask:
+    build:
+      context: ../../
+      dockerfile: envs/dev/back/Dockerfile
+    image: starter-back:dev
+    networks:
+      - network
+    volumes:
+      - ../../:/code
+    depends_on:
+      - postgres
+    env_file:
+      - ./back/.env
+    links:
+      - postgres
+    environment:
+      - FLASK_APP=main.py
+      - MIGRATION=1 # set 1 if you want to migrate
+    ports:
+      - "5678:5678"
+      - "5001:5001"
+    container_name: starter_back
+
+  qodana:
+    image: jetbrains/qodana-python
+    environment:
+      - QODANA_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb24iOiJwNXFXRCIsInByb2plY3QiOiJ6cW5YbiIsInRva2VuIjoiQU9yTjkifQ.9sh-PKXYpLY_GaB-CADZZKh41gdk8AT_-eKVftoJxqI
+    volumes:
+      - ../../:/data/project/
+      - ./qodana.yaml:/data/configuration/qodana.yaml
+    ports:
+      - "8080:8080"
+    container_name: starter_qodana
+
+volumes:
+  postgres:
+  postgres_data:
+  qodana:
+
+
+networks:
+  network:
