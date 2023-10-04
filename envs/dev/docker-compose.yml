@@ -48,21 +48,10 @@ services:
       - "5001:5001"
     container_name: starter_back
 
-  qodana:
-    image: jetbrains/qodana-python
-    environment:
-      - QODANA_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb24iOiJwNXFXRCIsInByb2plY3QiOiJ6cW5YbiIsInRva2VuIjoiQU9yTjkifQ.9sh-PKXYpLY_GaB-CADZZKh41gdk8AT_-eKVftoJxqI
-    volumes:
-      - ../../:/data/project/
-      - ./qodana.yaml:/data/configuration/qodana.yaml
-    ports:
-      - "8080:8080"
-    container_name: starter_qodana
 
 volumes:
   postgres:
   postgres_data:
-  qodana:
 
 
 networks:

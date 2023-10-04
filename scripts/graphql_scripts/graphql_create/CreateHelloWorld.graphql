@@ -1,0 +1,8 @@
+mutation {
+    createHelloWorld (input: {name: "HelloWorld"}) {
+        helloWorld {
+            id,
+            name
+        }
+    }
+}
