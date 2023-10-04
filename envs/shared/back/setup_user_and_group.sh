@@ -1,4 +1,4 @@
-GROUP_NAME=starter
+GROUP_NAME=genee
 TARGET_GID=$(stat -c "%g" ./)
 TARGET_UID=$(stat -c "%u" ./)
 
