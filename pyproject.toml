@@ -1,0 +1,39 @@
+[project]
+name = 'chuut'
+version = '1.0.0'
+description = 'CHUUT Backend'
+requires-python = '>=3.11'
+dependencies = [
+    'alembic',
+    'psycopg2',
+    'bcrypt',
+    'Flask',
+    'flask-blueprint',
+    'Flask-Cors',
+    'Flask-Migrate',
+    'Flask-SQLAlchemy',
+    'Flask-restx',
+    'marshmallow',
+    'marshmallow-sqlalchemy',
+    'paramiko',
+    'Pillow',
+    'requests',
+    'SQLAlchemy',
+    'uWSGI',
+    'load_dotenv',
+    'pytest',
+    'graphene-sqlalchemy',
+    'Flask-GraphQL'
+]
+
+[pyproject.optional-dependencies]
+dev = [] # ici mettre les nouvelles dependances tester lors du dev
+
+[tool.setuptools]
+py-modules = []
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = 'black'
