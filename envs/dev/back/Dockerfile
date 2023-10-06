@@ -6,7 +6,7 @@ WORKDIR /code
 
 # Ajoutez ces deux lignes pour créer un nouvel utilisateur et lui donner la propriété du répertoire de travail
 RUN addgroup --gid 1000 groupcontainer
-RUN useradd -ms /bin/bash --uid 1000 genee_x_chuut
+RUN useradd -ms /bin/bash --uid 1000 genee
 RUN chown -R genee:genee /code
 RUN chmod -R 755 /tmp
 
