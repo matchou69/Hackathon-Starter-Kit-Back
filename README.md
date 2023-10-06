@@ -130,9 +130,14 @@ Pycharm est l'IDE Python de jetbrains, pour avoir acces au programme par l'IDE s
 
 ### mise en place du format par lint
 
-- ``black`` permet de formatter le code 
-  - premièrement bien verifier que Black est bien installé : ``python3 -m pip install Black``
-    ensuite pour le mettre directement sur la fonction ``format code`` de pycharm il faut aller dans ``parametres>tools>black`` et activer ``on code reformat``
+``black`` permet de formatter le code 
+- premièrement bien verifier que Black est bien installé : 
+
+```shell
+python3 -m pip install Black
+```
+
+- ensuite pour le mettre directement sur la fonction ``format code`` de pycharm il faut aller dans ``parametres>tools>black``, mettre l'``Execution mode`` en ``Binary`` et activer ``on code reformat``
 
 ### mise en place de la visualisation de la base de donnée
 
