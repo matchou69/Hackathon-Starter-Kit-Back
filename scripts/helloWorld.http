@@ -1,0 +1,6 @@
+POST http://localhost:5001/api/helloworld
+Content-Type: application/json
+
+{
+  "name": "hello_world"
+}

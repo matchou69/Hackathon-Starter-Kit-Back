@@ -1,13 +1,5 @@
 #!/bin/bash
 
-(cd scripts && python3 create_schema.py)
-
-if [ "$TEST_MODE" = "true" ]; then
-  echo "Running in Test Mode"
-  export DB_NAME=db_test
-fi
-
-
 pg_isready -d ${DB_NAME} -h postgres -p 5432 -U postgres
 while [[ $? -ne 0 ]] ; do
   echo "Waiting for postgres server ready to accept connections..."

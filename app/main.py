@@ -1,20 +1,10 @@
 import os
 
 from dotenv import load_dotenv
-from flask_graphql import GraphQLView
 
-from schema import schema
 from shared import create_app
 
 app = create_app()
-app.add_url_rule(
-    "/graphql",
-    view_func=GraphQLView.as_view(
-        "graphql",
-        schema=schema,
-        graphiql=True,
-    ),
-)
 
 if __name__ == "__main__":
     load_dotenv()
