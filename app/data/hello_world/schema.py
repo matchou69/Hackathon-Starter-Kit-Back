@@ -9,3 +9,4 @@ class HelloWorldSchema(BaseSchema):
         model = HelloWorldModel
         load_instance = True
 
+    id = fields.UUID(dump_only=True)

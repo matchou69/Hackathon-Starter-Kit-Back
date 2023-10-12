@@ -7,7 +7,7 @@ from data.common import BaseCRUDHelper
 name = 'helloworld'
 blueprint = Blueprint(name + "_blueprint", __name__)
 
-crud = BaseCRUDHelper(HelloWorldModel, HelloWorldSchema)
+crud = BaseCRUDHelper(HelloWorldModel, HelloWorldSchema())
 
 
 @blueprint.get('/' + name + "/<uuid:id>")
