@@ -12,7 +12,6 @@ Content-Type: application/json
 ###
 PUT http://localhost:5001/api/helloworld/c7cfeae3-8346-4d83-b651-d92b7986ead1
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5NzE4NTQ3OSwianRpIjoiNjE5ZGRkOTItMjgzYS00NWJlLWEzMjEtZDYwNGE4NjUwYjRlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6Ikd3aWxob2EiLCJuYmYiOjE2OTcxODU0NzksImV4cCI6MTY5NzE5MjY3OSwiY3VzdG9tX2RhdGEiOiJjYSBtYXJjaGUifQ.nLRnj6YwKPAyB0Aj3G3CwfdJdHX6XNzWMfL_E_LxLtk
 
 {
   "name": "hello_world122"

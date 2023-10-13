@@ -24,7 +24,8 @@ dependencies = [
     'pytest',
     'Flask-GraphQL',
     'cloudinary',
-    'Flask-JWT-Extended'
+    'Flask-JWT-Extended',
+    'twilio'
 ]
 
 [pyproject.optional-dependencies]

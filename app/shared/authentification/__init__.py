@@ -1,0 +1,1 @@
+from shared.authentification.default_jwt_manager import generate_token

@@ -1,1 +1,1 @@
-from data.hello_world.controller import blueprint
+from data.hello_world.controller.controller import blueprint

@@ -1,0 +1,33 @@
+POST http://localhost:5001/api/register
+Content-Type: application/json
+
+
+{
+  "username": "gwilhoa",
+  "password": "test",
+  "phone": "+33769352015"
+}
+
+
+
+###
+
+POST http://localhost:5001/api/send_sms
+Content-Type: application/json
+
+
+{
+  "phone": "+33769352015"
+}
+
+
+
+###
+
+POST http://localhost:5001/api/login
+Content-Type: application/json
+
+{
+  "phone": "+33769352015",
+  "code": "540438"
+}

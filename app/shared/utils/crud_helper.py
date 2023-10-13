@@ -4,7 +4,7 @@ import traceback
 from marshmallow import ValidationError
 
 from shared import db
-from data.common.schema import BaseSchema
+from shared.utils.schema import BaseSchema
 
 
 class BaseCRUDHelper:

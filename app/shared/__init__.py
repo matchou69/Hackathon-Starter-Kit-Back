@@ -10,8 +10,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 
-from shared.asset_image_manager import AssetImageManager
-from shared.jwt_manager import generate_token
+from shared.cloudinary.asset_image_manager import AssetImageManager
 
 load_dotenv()
 ENV: Final[str] = os.getenv("ENV")
@@ -26,7 +25,7 @@ JWT_SECRET: Final[str] = os.getenv("JWT_SECRET")
 if JWT_SECRET is None:
     raise Exception("JWT_SECRET is not defined in the .env file")
 
-db = SQLAlchemy()
+db: SQLAlchemy = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
 #image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
@@ -53,7 +52,9 @@ def create_app():
     app.logger.setLevel(logging.INFO)
 
     from data.hello_world import blueprint as hello_world_blueprint
+    from data.authentification import blueprint as auth_blueprint
     app.register_blueprint(hello_world_blueprint, url_prefix=url_prefix)
+    app.register_blueprint(auth_blueprint, url_prefix=url_prefix)
 
     CORS(app, resources={r"/*": {"origins": "*"}})
 
