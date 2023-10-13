@@ -8,5 +8,3 @@ class HelloWorldSchema(BaseSchema):
     class Meta:
         model = HelloWorldModel
         load_instance = True
-
-    id = fields.UUID(dump_only=True)

@@ -22,7 +22,6 @@ dependencies = [
     'uWSGI',
     'load_dotenv',
     'pytest',
-    'graphene-sqlalchemy',
     'Flask-GraphQL'
 ]
 
