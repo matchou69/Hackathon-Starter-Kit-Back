@@ -8,8 +8,10 @@ from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
 
 from shared.asset_image_manager import AssetImageManager
+from shared.jwt_manager import generate_token
 
 load_dotenv()
 ENV: Final[str] = os.getenv("ENV")
@@ -19,8 +21,14 @@ DB_PASS: Final[str] = os.getenv("DB_PASS")
 DB_NAME: Final[str] = os.getenv("DB_NAME")
 DB_IP: Final[str] = os.getenv("DB_IP")
 MIGRATION: Final[str] = os.getenv("MIGRATION")
+
+JWT_SECRET: Final[str] = os.getenv("JWT_SECRET")
+if JWT_SECRET is None:
+    raise Exception("JWT_SECRET is not defined in the .env file")
+
 db = SQLAlchemy()
 migrate = Migrate()
+jwt = JWTManager()
 #image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
 
 
@@ -30,10 +38,12 @@ def create_app():
     app.config[
         "SQLALCHEMY_DATABASE_URI"
     ] = f"postgresql://{USER}:{DB_PASS}@{DB_IP}:5432/{DB_NAME}"
+    app.config["JWT_SECRET_KEY"] = JWT_SECRET
 
     url_prefix = '/api'
 
     db.init_app(app)
+    jwt.init_app(app)
     if MIGRATION == "1":
         migrate.init_app(app, db)
 

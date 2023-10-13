@@ -1,5 +1,5 @@
-DELETE http://localhost:5001/api/helloworld/71f79016-d6e9-41a3-9f44-02b43c5fdd0b
-Accept: application/json
+#DELETE http://localhost:5001/api/helloworld/71f79016-d6e9-41a3-9f44-02b43c5fdd0b
+#Accept: application/json
 
 ###
 POST http://localhost:5001/api/helloworld
@@ -10,12 +10,13 @@ Content-Type: application/json
 }
 
 ###
-#PUT http://localhost:5001/api/helloworld/de494776-fb8c-4272-8753-ea01bbb1d342
-#Content-Type: application/json
-#
-#{
-#  "name": "hello_world122"
-#}
+PUT http://localhost:5001/api/helloworld/c7cfeae3-8346-4d83-b651-d92b7986ead1
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5NzE4NTQ3OSwianRpIjoiNjE5ZGRkOTItMjgzYS00NWJlLWEzMjEtZDYwNGE4NjUwYjRlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6Ikd3aWxob2EiLCJuYmYiOjE2OTcxODU0NzksImV4cCI6MTY5NzE5MjY3OSwiY3VzdG9tX2RhdGEiOiJjYSBtYXJjaGUifQ.nLRnj6YwKPAyB0Aj3G3CwfdJdHX6XNzWMfL_E_LxLtk
+
+{
+  "name": "hello_world122"
+}
 
 
 

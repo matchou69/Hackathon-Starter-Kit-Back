@@ -23,7 +23,8 @@ dependencies = [
     'load_dotenv',
     'pytest',
     'Flask-GraphQL',
-    'cloudinary'
+    'cloudinary',
+    'Flask-JWT-Extended'
 ]
 
 [pyproject.optional-dependencies]

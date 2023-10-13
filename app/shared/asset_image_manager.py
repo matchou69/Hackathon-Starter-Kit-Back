@@ -5,9 +5,8 @@ import cloudinary
 import cloudinary.api
 import cloudinary.uploader
 
-from errors import FORBIDDEN_TOKENS, CDNUnexpectedTokenError
 
-PREFIX = "CHUUT/"
+PREFIX = "STARTER/"
 
 
 class AssetImageManager:
@@ -42,8 +41,8 @@ class AssetImageManager:
 
 
     def image_upload(self, data, name):
-        if any(c in name for c in FORBIDDEN_TOKENS):
-            raise CDNUnexpectedTokenError(name)
+        if any(c in name for c in '/'):
+            raise f'cloudinary name syntaxe error'
         name = PREFIX + "asset/image/" + name
         return self._upload_image_base64(data, name)
 
