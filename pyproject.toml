@@ -22,7 +22,8 @@ dependencies = [
     'uWSGI',
     'load_dotenv',
     'pytest',
-    'Flask-GraphQL'
+    'Flask-GraphQL',
+    'cloudinary'
 ]
 
 [pyproject.optional-dependencies]

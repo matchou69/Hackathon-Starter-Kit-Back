@@ -8,10 +8,8 @@ alembic==1.12.0
     # via
     #   chuut (pyproject.toml)
     #   flask-migrate
-aniso8601==7.0.0
-    # via
-    #   flask-restx
-    #   graphene
+aniso8601==9.0.1
+    # via flask-restx
 attrs==23.1.0
     # via
     #   jsonschema
@@ -20,10 +18,12 @@ bcrypt==4.0.1
     # via
     #   chuut (pyproject.toml)
     #   paramiko
-blinker==1.6.2
+blinker==1.6.3
     # via flask
 certifi==2023.7.22
-    # via requests
+    # via
+    #   cloudinary
+    #   requests
 cffi==1.16.0
     # via
     #   cryptography
@@ -32,6 +32,8 @@ charset-normalizer==3.3.0
     # via requests
 click==8.1.7
     # via flask
+cloudinary==1.36.0
+    # via chuut (pyproject.toml)
 cryptography==41.0.4
     # via paramiko
 flask==3.0.0
@@ -56,18 +58,10 @@ flask-sqlalchemy==3.1.1
     # via
     #   chuut (pyproject.toml)
     #   flask-migrate
-graphene==2.1.9
-    # via graphene-sqlalchemy
-graphene-sqlalchemy==2.1.0
-    # via chuut (pyproject.toml)
 graphql-core==2.3.2
     # via
     #   flask-graphql
-    #   graphene
-    #   graphql-relay
     #   graphql-server-core
-graphql-relay==2.0.1
-    # via graphene
 graphql-server-core==1.2.0
     # via flask-graphql
 idna==3.4
@@ -110,9 +104,7 @@ pluggy==1.3.0
     # via pytest
 promise==2.3
     # via
-    #   graphene-sqlalchemy
     #   graphql-core
-    #   graphql-relay
     #   graphql-server-core
 psycopg2==2.9.9
     # via chuut (pyproject.toml)
@@ -132,34 +124,31 @@ referencing==0.30.2
     #   jsonschema-specifications
 requests==2.31.0
     # via chuut (pyproject.toml)
-rpds-py==0.10.3
+rpds-py==0.10.6
     # via
     #   jsonschema
     #   referencing
 rx==1.6.3
     # via graphql-core
-singledispatch==4.1.0
-    # via graphene-sqlalchemy
 six==1.16.0
     # via
-    #   graphene
-    #   graphene-sqlalchemy
+    #   cloudinary
     #   graphql-core
-    #   graphql-relay
     #   promise
-sqlalchemy==2.0.21
+sqlalchemy==2.0.22
     # via
     #   alembic
     #   chuut (pyproject.toml)
     #   flask-sqlalchemy
-    #   graphene-sqlalchemy
     #   marshmallow-sqlalchemy
 typing-extensions==4.8.0
     # via
     #   alembic
     #   sqlalchemy
 urllib3==2.0.6
-    # via requests
+    # via
+    #   cloudinary
+    #   requests
 uwsgi==2.0.22
     # via chuut (pyproject.toml)
 werkzeug==3.0.0

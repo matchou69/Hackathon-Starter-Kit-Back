@@ -9,6 +9,8 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
+from shared.asset_image_manager import AssetImageManager
+
 load_dotenv()
 ENV: Final[str] = os.getenv("ENV")
 USER: Final[str] = os.getenv("DB_USER")
@@ -19,6 +21,7 @@ DB_IP: Final[str] = os.getenv("DB_IP")
 MIGRATION: Final[str] = os.getenv("MIGRATION")
 db = SQLAlchemy()
 migrate = Migrate()
+#image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
 
 
 def create_app():
