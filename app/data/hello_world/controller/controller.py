@@ -9,10 +9,6 @@ blueprint = Blueprint("helloworld_blueprint", __name__, url_prefix='helloworld')
 
 crud = BaseCRUDHelper(HelloWorldModel, HelloWorldSchema())
 
-@blueprint.get('/login')
-def settoken():
-    return generate_token('Gwilhoa', "ca marche", 2)
-
 
 @blueprint.get("/<uuid:id>")
 def get_hello_world(id):

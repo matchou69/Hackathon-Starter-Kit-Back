@@ -33,8 +33,8 @@ class PasswordJwtManager:
         user = db.session.get(UserModel, id, with_for_update=True)
         if user is None:
             return None
-        if bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
-            return self.generate_token(user.username, user['id'], 2)
+        if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+            return self.generate_token(user.username, user.id, 2)
         return None
 
     def authenticate_user_by_name(self, name, password):

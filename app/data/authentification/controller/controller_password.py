@@ -17,8 +17,8 @@ def register():
 @blueprint.post('/login')
 def login():
     data = request.get_json()
-    data = AuthentificationInput().validate(data)
+    AuthentificationInput().validate(data)
     auth_token = jwt_manager.authenticate_user_by_name(data['username'], data['password'])
-    if auth_token is None:
+    if auth_token is None:                   
         return {'message': 'incorrect user or password'}
     return auth_token

@@ -1,1 +1,1 @@
-from data.authentification.controller.controller_phone import blueprint
+from data.authentification.controller.controller_password import blueprint
