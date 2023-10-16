@@ -20,6 +20,6 @@ COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN CPUCOUNT=1 pip install -r ./app/requirements.txt
 
 EXPOSE 5001
-USER genee_x_chuut
+USER genee
 ENTRYPOINT [ "bash", "-cl", "./envs/prod/back/back-start.sh" ]
 # CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
