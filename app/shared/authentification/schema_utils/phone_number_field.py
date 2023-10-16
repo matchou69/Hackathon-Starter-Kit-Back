@@ -12,5 +12,4 @@ class PhoneNumberField(fields.Field):
         match = PhoneNumberField.phone_pattern.fullmatch(value)
         if match is None:
             raise ValidationError(f"Invalid Phone Number: {value}")
-        print(f"+33{match['digits']}", flush=True)
         return f"+33{match['digits']}"

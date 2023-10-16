@@ -4,7 +4,7 @@ from twilio.base.exceptions import TwilioRestException
 
 from data.authentification.user.model import UserModel
 from shared import db, client
-from shared.authentification.errors import UserNotFoundException, CustomTwilioError
+from shared.authentification.errors import UserNotFoundException, CustomTwilioError, IncorrectVerificationCodeError
 from shared.authentification.utils import generate_token
 
 
@@ -72,8 +72,9 @@ class PhoneJwtManager:
 
         :param phone: The user's phone number.
         :param code: The verification code to check.
-        :return: An access token if the provided code is correct, None otherwise.
+        :return: An access token
         :raises UserNotFoundException: If there is an issue with retrieving user information.
+        :raises IncorrectVerificationCodeError: If the provided code is not correct
         """
 
         user = db.session.query(UserModel).filter_by(phone=phone).one_or_none()
@@ -82,4 +83,4 @@ class PhoneJwtManager:
         if code == self.code_pass.get(user.id):
             self.code_pass.pop(user.id)
             return generate_token(user.username, user.id, 2)
-        return None
+        raise IncorrectVerificationCodeError()

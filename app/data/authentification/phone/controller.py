@@ -25,9 +25,8 @@ def register():
 def send_msg():
     data = request.get_json()
     send_sms_validation_schema.validate(data)
-    if jwt_manager.send_phone_msg(data["phone"]):
-        return 'ok'
-    return 'error'
+    jwt_manager.send_phone_msg(data["phone"])
+    return 'ok', 200
 
 
 @blueprint.post(f'/{NAME}/login')
@@ -35,6 +34,4 @@ def login():
     data = request.get_json()
     login_validation_schema.validate(data)
     token = jwt_manager.authenticate_by_phone(data['phone'], data['code'])
-    if token is None:
-        return 'error'
-    return token
+    return {"token": token}, 200
