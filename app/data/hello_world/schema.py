@@ -1,4 +1,4 @@
-from data.hello_world.model.model import HelloWorldModel
+from data.hello_world.model import HelloWorldModel
 from shared.utils import BaseSchema
 
 

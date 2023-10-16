@@ -9,7 +9,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from twilio.rest import Client
+from twilio.rest import Client as TwilioClient
 
 from shared.cloudinary.asset_image_manager import AssetImageManager
 
@@ -30,7 +30,7 @@ if JWT_SECRET is None:
 db: SQLAlchemy = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-client = Client(ACCOUNT_SID, AUTH_TWILIO)
+client = TwilioClient(ACCOUNT_SID, AUTH_TWILIO)
 
 
 # image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
@@ -57,9 +57,13 @@ def create_app():
     app.logger.setLevel(logging.INFO)
 
     from data.hello_world import blueprint as hello_world_blueprint
-    from data.authentification import blueprint as auth_blueprint
+    from data.authentification.password import blueprint as password_auth_blueprint
+    from data.authentification.phone import blueprint as phone_auth_blueprint
     app.register_blueprint(hello_world_blueprint, url_prefix=url_prefix)
-    app.register_blueprint(auth_blueprint, url_prefix=url_prefix)
+    app.register_blueprint(password_auth_blueprint, url_prefix=url_prefix)
+    app.register_blueprint(phone_auth_blueprint, url_prefix=url_prefix)
+
+    print(app.url_map, flush=True)
 
     CORS(app, resources={r"/*": {"origins": "*"}})
 
