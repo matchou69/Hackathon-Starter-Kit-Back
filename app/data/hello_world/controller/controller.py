@@ -5,29 +5,32 @@ from data.hello_world.model.model import HelloWorldModel
 from data.hello_world.schema.schema import HelloWorldSchema
 from shared.utils import BaseCRUDHelper
 
-NAME = 'helloworld'
-blueprint = Blueprint(NAME + "_blueprint", __name__)
+blueprint = Blueprint("helloworld_blueprint", __name__, url_prefix='helloworld')
 
 crud = BaseCRUDHelper(HelloWorldModel, HelloWorldSchema())
 
+@blueprint.get('/login')
+def settoken():
+    return generate_token('Gwilhoa', "ca marche", 2)
 
-@blueprint.get('/' + NAME + "/<uuid:id>")
+
+@blueprint.get("/<uuid:id>")
 def get_hello_world(id):
     return crud.handle_get(id)
 
 
-@blueprint.post('/' + NAME)
+@blueprint.post('/')
 def post_hello_world():
     data = request.get_json()
     return crud.handle_post(data)
 
 
-@blueprint.delete('/' + NAME + "/<uuid:id>")
+@blueprint.delete("/<uuid:id>")
 def delete_hello_world(id):
     return crud.handle_delete(id)
 
 
-@blueprint.put('/' + NAME + "/<uuid:id>")
+@blueprint.put("/<uuid:id>")
 @jwt_required()
 def update_hello_world(id):
     current_user = get_jwt_identity()
