@@ -1,14 +1,15 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 from data.hello_world.model.model import HelloWorldModel
 from data.hello_world.schema.schema import HelloWorldSchema
 from shared.utils import BaseCRUDHelper
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 NAME = 'helloworld'
 blueprint = Blueprint(NAME + "_blueprint", __name__)
 
 crud = BaseCRUDHelper(HelloWorldModel, HelloWorldSchema())
+
 
 @blueprint.get('/' + NAME + "/<uuid:id>")
 def get_hello_world(id):

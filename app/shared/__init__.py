@@ -6,9 +6,10 @@ from typing import Final
 from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
+from twilio.rest import Client
 
 from shared.cloudinary.asset_image_manager import AssetImageManager
 
@@ -20,7 +21,8 @@ DB_PASS: Final[str] = os.getenv("DB_PASS")
 DB_NAME: Final[str] = os.getenv("DB_NAME")
 DB_IP: Final[str] = os.getenv("DB_IP")
 MIGRATION: Final[str] = os.getenv("MIGRATION")
-
+ACCOUNT_SID: Final[str] = os.getenv("ACCOUNT_SID")
+AUTH_TWILIO: Final[str] = os.getenv("AUTH_TWILIO")
 JWT_SECRET: Final[str] = os.getenv("JWT_SECRET")
 if JWT_SECRET is None:
     raise Exception("JWT_SECRET is not defined in the .env file")
@@ -28,7 +30,10 @@ if JWT_SECRET is None:
 db: SQLAlchemy = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-#image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
+client = Client(ACCOUNT_SID, AUTH_TWILIO)
+
+
+# image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
 
 
 def create_app():

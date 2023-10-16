@@ -1,5 +1,6 @@
-from shared import db
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+
+from shared import db
 
 
 class BaseSchema(SQLAlchemyAutoSchema):

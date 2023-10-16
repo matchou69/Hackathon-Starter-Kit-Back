@@ -1,24 +1,24 @@
 from flask import Blueprint, request
 
-from shared.authentification.default_jwt_manager import register_profil, authenticate_user_by_name
-from shared.authentification.schema.user_schema import UserSchema
+from shared.authentification.password_jwt_manager import PasswordJwtManager, AuthentificationInput
 
 NAME = 'auth'
 blueprint = Blueprint(NAME + "_blueprint", __name__)
 
-authentification_input = UserSchema(only=["username", "password"])
+jwt_manager = PasswordJwtManager()
 
 
 @blueprint.post('/register')
 def register():
     data = request.get_json()
-    return register_profil(data)
+    return jwt_manager.register_profil(data)
+
 
 @blueprint.post('/login')
 def login():
     data = request.get_json()
-    data = authentification_input.load(data)
-    auth_token = authenticate_user_by_name(data.username, data.password)
+    data = AuthentificationInput().validate(data)
+    auth_token = jwt_manager.authenticate_user_by_name(data['username'], data['password'])
     if auth_token is None:
         return {'message': 'incorrect user or password'}
     return auth_token
