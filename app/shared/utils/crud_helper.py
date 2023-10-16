@@ -4,11 +4,12 @@ import traceback
 from marshmallow import ValidationError
 
 from shared import db
-from data.common.schema import BaseSchema
+from shared.utils.schema import BaseSchema
 
 
 class BaseCRUDHelper:
     """Utility class for basic CRUD operations on an SQLAlchemy data model."""
+
     def __init__(self, model: type, schema: BaseSchema):
         self.schema = schema
         self.model = model

@@ -5,7 +5,6 @@ import cloudinary
 import cloudinary.api
 import cloudinary.uploader
 
-
 PREFIX = "STARTER/"
 
 
@@ -31,7 +30,7 @@ class AssetImageManager:
         :returns: URL of the resized image.
         """
         url = cloudinary.utils.cloudinary_url(image_id, width=width, height=height, crop="fill")[0]
-        
+
         return url
 
     def upload_image_base64(self, image_base64, name):

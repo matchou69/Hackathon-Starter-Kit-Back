@@ -6,12 +6,14 @@ from typing import Final
 from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
+from marshmallow import ValidationError
+from twilio.rest import Client as TwilioClient
 
-from shared.asset_image_manager import AssetImageManager
-from shared.jwt_manager import generate_token
+from errors import CustomError
+from shared.cloudinary.asset_image_manager import AssetImageManager
 
 load_dotenv()
 ENV: Final[str] = os.getenv("ENV")
@@ -21,15 +23,19 @@ DB_PASS: Final[str] = os.getenv("DB_PASS")
 DB_NAME: Final[str] = os.getenv("DB_NAME")
 DB_IP: Final[str] = os.getenv("DB_IP")
 MIGRATION: Final[str] = os.getenv("MIGRATION")
-
+ACCOUNT_SID: Final[str] = os.getenv("ACCOUNT_SID")
+AUTH_TWILIO: Final[str] = os.getenv("AUTH_TWILIO")
 JWT_SECRET: Final[str] = os.getenv("JWT_SECRET")
 if JWT_SECRET is None:
     raise Exception("JWT_SECRET is not defined in the .env file")
 
-db = SQLAlchemy()
+db: SQLAlchemy = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-#image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
+client = TwilioClient(ACCOUNT_SID, AUTH_TWILIO)
+
+
+# image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
 
 
 def create_app():
@@ -53,7 +59,17 @@ def create_app():
     app.logger.setLevel(logging.INFO)
 
     from data.hello_world import blueprint as hello_world_blueprint
+    from data.authentification.password import blueprint as password_auth_blueprint
+    from data.authentification.phone import blueprint as phone_auth_blueprint
     app.register_blueprint(hello_world_blueprint, url_prefix=url_prefix)
+    app.register_blueprint(password_auth_blueprint, url_prefix=url_prefix)
+    app.register_blueprint(phone_auth_blueprint, url_prefix=url_prefix)
+
+    @app.errorhandler(CustomError)
+    @app.errorhandler(ValidationError)
+    def handle_custom_error(error: CustomError):
+        return str(error), 400
+
 
     CORS(app, resources={r"/*": {"origins": "*"}})
 

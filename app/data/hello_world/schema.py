@@ -1,7 +1,5 @@
-from marshmallow import fields
-
 from data.hello_world.model import HelloWorldModel
-from data.common import BaseSchema
+from shared.utils import BaseSchema
 
 
 class HelloWorldSchema(BaseSchema):
