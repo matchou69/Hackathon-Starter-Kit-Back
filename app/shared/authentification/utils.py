@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 
 def generate_token(user, custom_data, duration_hour):
@@ -18,4 +18,13 @@ def generate_token(user, custom_data, duration_hour):
         "custom_data": custom_data,
     }
     access_token = create_access_token(identity=user, expires_delta=expires, additional_claims=additional_claims)
+    return access_token
+
+
+def generate_refresh_token(user, custom_data, duration_day):
+    expires = timedelta(days=duration_day)
+    additional_claims = {
+        "custom_data": custom_data,
+    }
+    access_token = create_refresh_token(identity=user, expires_delta=expires, additional_claims=additional_claims)
     return access_token

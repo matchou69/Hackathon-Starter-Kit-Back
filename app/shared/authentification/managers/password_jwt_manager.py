@@ -4,7 +4,7 @@ from data.authentification.user.model import UserModel
 from data.authentification.user.schema import UserSchema
 from shared import db
 from shared.authentification.errors import UserNotFoundException
-from shared.authentification.utils import generate_token
+from shared.authentification.utils import generate_token, generate_refresh_token
 
 user_schema = UserSchema()
 
@@ -30,7 +30,9 @@ class PasswordJwtManager:
         new_user.password = hash_password
         db.session.add(new_user)
         db.session.commit()
-        return generate_token(new_user.id, new_user.username, 2)
+        token = generate_token(new_user.id, None, 2)
+        refresh_token = generate_refresh_token(new_user.id, None, 2)
+        return token, refresh_token
 
     def authenticate_user_by_id(self, id, password):
         """
@@ -48,7 +50,9 @@ class PasswordJwtManager:
         if user is None:
             raise UserNotFoundException(id=id)
         if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
-            return generate_token(user.id, None, 2)
+            token = generate_token(user.id, None, 2)
+            refresh_token = generate_refresh_token(user.id, None, 2)
+            return token, refresh_token
         return None
 
     def authenticate_user_by_name(self, name, password):
@@ -70,3 +74,7 @@ class PasswordJwtManager:
             if token is not None:
                 return token
         return None
+
+    def refresh(self, current_id):
+        token = generate_token(current_id, None, 2)
+        return token

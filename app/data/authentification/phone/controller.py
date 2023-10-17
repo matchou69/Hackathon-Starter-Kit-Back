@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from data.authentification.phone.schema import LoginValidationSchema
 from data.authentification.user.schema import UserSchema
@@ -35,3 +36,11 @@ def login():
     login_validation_schema.validate(data)
     token = jwt_manager.authenticate_by_phone(data['phone'], data['code'])
     return {"token": token}, 200
+
+
+@jwt_required(refresh=True)
+@blueprint.get(f'/{NAME}/refresh')
+def refresh():
+    current_id = get_jwt_identity()
+    access_token = jwt_manager.refresh(current_id)
+    return {'access_token': access_token}

@@ -5,7 +5,7 @@ from twilio.base.exceptions import TwilioRestException
 from data.authentification.user.model import UserModel
 from shared import db, client
 from shared.authentification.errors import UserNotFoundException, CustomTwilioError, IncorrectVerificationCodeError
-from shared.authentification.utils import generate_token
+from shared.authentification.utils import generate_token, generate_refresh_token
 
 
 class PhoneJwtManager:
@@ -82,5 +82,11 @@ class PhoneJwtManager:
             raise UserNotFoundException(phone=phone)
         if code == self.code_pass.get(user.id):
             self.code_pass.pop(user.id)
-            return generate_token(user.username, user.id, 2)
+            token = generate_token(user.id, None, 2)
+            refresh_token = generate_refresh_token(user.id, None, 2)
+            return token, refresh_token
         raise IncorrectVerificationCodeError()
+
+    def refresh(self, current_id):
+        token = generate_token(current_id, None, 2)
+        return token
