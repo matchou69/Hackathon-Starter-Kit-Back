@@ -2,31 +2,39 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from data.authentification.phone.schema import LoginValidationSchema
+from data.authentification.user.model import UserModel
 from data.authentification.user.schema import UserSchema
-from shared.authentification.managers import PhoneJwtManager
+from shared.authentification.managers import PhoneAuthManager
+from shared.authentification.managers.jwt_manager import JWTGenerationManager
+from shared.utils.crud_helper import BaseCRUDHelper
+from shared.utils.registry import Registry
 
 NAME = "phone_auth"
 blueprint = Blueprint(NAME + "_blueprint", __name__)
 
-jwt_manager = PhoneJwtManager()
-
+auth_manager = PhoneAuthManager()
+jwt_manager = JWTGenerationManager()
 login_validation_schema = LoginValidationSchema()
-user_schema = UserSchema()
 send_sms_validation_schema = UserSchema(only=['phone'])
+user_schema = UserSchema()
+user_registry = Registry(UserModel)
 
 
 @blueprint.post(f'/{NAME}/register')
 def register():
     data = request.get_json()
-    new_user = user_schema.load(data)
-    return jwt_manager.register_profile(new_user)
+    user = user_schema.load(data)
+    user_registry.save_entity(user)
+    auth_manager.send_verification_message(user)
+    return 'ok', 200
 
 
 @blueprint.post(f'/{NAME}/send_sms')
 def send_msg():
     data = request.get_json()
     send_sms_validation_schema.validate(data)
-    jwt_manager.send_phone_msg(data["phone"])
+    user = user_registry.get_one_or_fail_where(phone=data["phone"])
+    auth_manager.send_phone_msg(user)
     return 'ok', 200
 
 
@@ -34,14 +42,15 @@ def send_msg():
 def login():
     data = request.get_json()
     login_validation_schema.validate(data)
-    tokens = jwt_manager.authenticate_by_phone(data['phone'], data['code'])
-    return {"access_token": tokens[0],
-            "refresh_token" : tokens[1]}, 200
+    user = user_registry.get_one_or_fail_where(phone=data['phone'])
+    auth_manager.authenticate_by_phone(user, data['code'])
+    tokens = jwt_manager.generate_access_and_refresh_tokens(user.id)
+    return tokens, 200
 
 
 @jwt_required(refresh=True)
 @blueprint.get(f'/{NAME}/refresh_token')
 def refresh_token():
-    current_id = get_jwt_identity()
-    access_token = jwt_manager.refresh(current_id)
-    return {'access_token': access_token}
+    user_id = get_jwt_identity()
+    access_token = jwt_manager.generate_token(user_id)
+    return {'access_token': access_token}, 200

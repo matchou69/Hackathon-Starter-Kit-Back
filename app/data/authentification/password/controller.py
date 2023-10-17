@@ -1,36 +1,44 @@
 from flask import Blueprint, request
 
 from data.authentification.password.schema import LoginValidationSchema
-from shared.authentification.managers import PasswordJwtManager
+from data.authentification.user.model import UserModel
+from data.authentification.user.schema import UserSchema
+from shared.authentification.managers import PasswordAuthManager
 from flask_jwt_extended import jwt_required, get_jwt_identity
+
+from shared.authentification.managers.jwt_manager import JWTGenerationManager
+from shared.utils.crud_helper import BaseCRUDHelper
+from shared.utils.registry import Registry
 
 NAME = "password_auth"
 blueprint = Blueprint(NAME + "_blueprint", __name__)
 
-jwt_manager = PasswordJwtManager()
+auth_manager = PasswordAuthManager()
+jwt_manager = JWTGenerationManager()
 login_validation_schema = LoginValidationSchema()
+user_schema = UserSchema()
+user_registry = Registry(UserModel)
 
 
 @blueprint.post(f'/{NAME}/register')
 def register():
     data = request.get_json()
-    tokens = jwt_manager.register_profile(data)
-    return {'access_token': tokens[0],
-            'refresh_token': tokens[1]}
+    user = user_schema.load(data)
+    user_registry.save_entity(user)
+    return jwt_manager.generate_access_and_refresh_tokens(user.id), 200
 
 
 @blueprint.post(f'/{NAME}/login')
 def login():
     data = request.get_json()
     login_validation_schema.validate(data)
-    tokens = jwt_manager.authenticate_user_by_name(data['username'], data['password'])
-    return {'access_token': tokens[0],
-            'refresh_token': tokens[1]}
+    user = auth_manager.authenticate_user_by_name(data['username'], data['password'])
+    return jwt_manager.generate_access_and_refresh_tokens(user.id), 200
 
 
 @jwt_required(refresh=True)
 @blueprint.get(f'/{NAME}/refresh_token')
 def refresh_token():
-    current_id = get_jwt_identity()
-    access_token = jwt_manager.refresh(current_id)
-    return {'access_token': access_token}
+    user_id = get_jwt_identity()
+    access_token = jwt_manager.generate_token(user_id, is_refresh=True)
+    return {'access_token': access_token}, 200

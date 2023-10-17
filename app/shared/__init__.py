@@ -13,7 +13,9 @@ from marshmallow import ValidationError
 from twilio.rest import Client as TwilioClient
 
 from errors import CustomError
+from shared.authentification.errors import EntityNotFoundError
 from shared.cloudinary.asset_image_manager import AssetImageManager
+from shared.twilio.twilio_manager import TwilioManager
 from shared.utils.env_getter import EnvironmentGetter
 
 env_getter = EnvironmentGetter()
@@ -35,7 +37,7 @@ if JWT_SECRET is None:
 db: SQLAlchemy = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-client = TwilioClient(ACCOUNT_SID, AUTH_TWILIO)
+twilio_manager = TwilioManager(ACCOUNT_SID, AUTH_TWILIO)
 
 
 # image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
@@ -70,8 +72,12 @@ def create_app():
 
     @app.errorhandler(CustomError)
     @app.errorhandler(ValidationError)
-    def handle_custom_error(error: CustomError):
+    def handle_custom_error(error):
         return str(error), 400
+
+    @app.errorhandler(EntityNotFoundError)
+    def handle_not_found_error(error):
+        return str(error), 404
 
 
     CORS(app, resources={r"/*": {"origins": "*"}})

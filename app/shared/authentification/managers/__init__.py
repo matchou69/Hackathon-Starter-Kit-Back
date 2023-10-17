@@ -1,2 +1,2 @@
-from .phone_jwt_manager import PhoneJwtManager
-from .password_jwt_manager import PasswordJwtManager
+from .phone_auth_manager import PhoneAuthManager
+from .password_auth_manager import PasswordAuthManager
