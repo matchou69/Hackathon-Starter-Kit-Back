@@ -20,19 +20,19 @@ et [Flask](https://flask.palletsprojects.com/en/2.3.x/).
 ```markdown
 .
 ├── app
-|   |└── Contient toute la logique de l'application
+│   │ └── Contient toute la logique de l'application
 │   ├── data
 │   │   └── Données (modèles SQLAlchemy) avec leur logique d'accès/modification (routes API, schémas)
 │   ├── errors
 │   │   └── Erreurs personnalisées de l'application
-│   └── shared
-│       |└── Logique d'initialisation de l'application, modules partagés (fonctions utilitaires, services)
-│       └── main.py
-│           └──Point d'entrée de l'application, il démarre le projet
+│   ├── shared
+│   │   └── Logique d'initialisation de l'application, modules partagés (fonctions utilitaires, services)
+│   └── main.py
+│       └──Point d'entrée de l'application, il démarre le projet
 ├── doc
 │   └── Décisions d'architecture (ARDs), guides, accumulation du savoir
 ├── envs
-│   |└── Environnements Docker de développement et de production
+│   │ └── Environnements Docker de développement et de production
 │   ├── dev
 │   ├── prod
 │   └── shared
