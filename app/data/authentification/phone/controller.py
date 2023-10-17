@@ -35,13 +35,13 @@ def login():
     data = request.get_json()
     login_validation_schema.validate(data)
     tokens = jwt_manager.authenticate_by_phone(data['phone'], data['code'])
-    return {"token": tokens[0],
+    return {"access_token": tokens[0],
             "refresh_token" : tokens[1]}, 200
 
 
 @jwt_required(refresh=True)
-@blueprint.get(f'/{NAME}/refresh')
-def refresh():
+@blueprint.get(f'/{NAME}/refresh_token')
+def refresh_token():
     current_id = get_jwt_identity()
     access_token = jwt_manager.refresh(current_id)
     return {'access_token': access_token}

@@ -3,8 +3,8 @@ import bcrypt
 from data.authentification.user.model import UserModel
 from data.authentification.user.schema import UserSchema
 from shared import db
-from shared.authentification.errors import UserNotFoundException
-from shared.authentification.utils import generate_token, generate_refresh_token
+from shared.authentification.errors import UserNotFoundException, IncorrectVerificationCodeError
+from shared.authentification.utils import generate_token
 
 user_schema = UserSchema()
 
@@ -31,7 +31,7 @@ class PasswordJwtManager:
         db.session.add(new_user)
         db.session.commit()
         token = generate_token(new_user.id, None, 2)
-        refresh_token = generate_refresh_token(new_user.id, None, 2)
+        refresh_token = generate_token(new_user.id, None, 48, True)
         return token, refresh_token
 
     def authenticate_user_by_id(self, id, password):
@@ -51,9 +51,9 @@ class PasswordJwtManager:
             raise UserNotFoundException(id=id)
         if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
             token = generate_token(user.id, None, 2)
-            refresh_token = generate_refresh_token(user.id, None, 2)
+            refresh_token = generate_token(user.id, None, 48, True)
             return token, refresh_token
-        return None
+        raise IncorrectVerificationCodeError()
 
     def authenticate_user_by_name(self, name, password):
         """
@@ -71,9 +71,8 @@ class PasswordJwtManager:
             raise UserNotFoundException(name=name)
         for user in users:
             token = self.authenticate_user_by_id(user.id, password)
-            if token is not None:
-                return token
-        return None
+            return token
+        raise UserNotFoundException(name=name)
 
     def refresh(self, current_id):
         token = generate_token(current_id, None, 2)
