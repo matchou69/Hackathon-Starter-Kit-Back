@@ -41,8 +41,6 @@ le répertoire `app`,  contient toutes la logique de l'application:
 Dans le répertoire `data`, chaque sous-répertoire représente une fonctionnalité distincte de l'application.
 Chaque module contient les fichiers suivants :
 
-- `` : Ce répertoire contient les définitions des points d'accès API pour le module. C'est ici que les requêtes HTTP
-  sont reçues et dirigées vers les contrôleurs appropriés.
 - `controller.py` : Ce fichier contient les définitions des points d'accès API pour le module. C'est ici que les requêtes HTTP
   sont reçues et dirigées vers les fonctions appropriés.
 - `model.py` : Ce fichier contient les modèles de données qui définissent la structure des données associées à la fonctionnalitée.
