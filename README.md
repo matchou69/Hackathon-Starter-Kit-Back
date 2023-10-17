@@ -1,48 +1,52 @@
-# Starter-Kit-Back
+# STARTER-BACK
 
 <img src="./doc/assets/genee.png" alt="Image 1" width="150px">
 
-STARTER est un projet de backend développé avec [Python](https://www.python.org/)
+Starter-KIT est un projet de backend développé avec [Python](https://www.python.org/)
 et [Flask](https://flask.palletsprojects.com/en/2.3.x/).
 
 ## Dépendances Principales
 
 - [Flask](https://flask.palletsprojects.com/en/2.3.x/) : Une micro framework pour Python.
 - [SQLAlchemy](https://www.sqlalchemy.org/) : Un SQL toolkit et ORM pour Python.
-- [graphql](https://graphql.org) : Une bibliothèque pour les requetes http et
-  pour la communication de données.
+- [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) : Une bibliothèque pour la conversion des types de
+  données, la validation et la désérialisation.
 - [Docker](https://www.docker.com/) : Une plateforme de conteneurisation.
 - [Docker Compose](https://docs.docker.com/compose/) : Un outil pour définir et gérer des applications multi-conteneurs
   avec Docker.
 
 ## Structure du Projet
 
-Dans le répertoire `app/`, chaque sous-répertoire représente un module ou une fonctionnalité distincte de l'application.
-Chaque module contient les sous-répertoires suivants :
-
-- `data/` : Ce répertoire contient le code source de l'application.
-- `error/` : Ce répertoire contient les erreurs pouvant etre survenu pendant l'utilisation de l'application
-- `shared/` : Ce répertoire contient les initialisations de l'application.
-- `repositories/` : Ce répertoire contient les classes de répertoire qui gèrent la persistance des données pour le
-  module.
-
 ```markdown
 .
 ├── app
+|   |└── Contient toute la logique de l'application
 │   ├── data
-│   │   └── Contient le code de l'application
+│   │   └── Données (modèles SQLAlchemy) avec leur logique d'accès/modification (routes API, schémas)
 │   ├── errors
+│   │   └── Erreurs personnalisées de l'application
 │   └── shared
+│       |└── Logique d'initialisation de l'application, modules partagés (fonctions utilitaires, services)
+│       └── main.py
+│           └──Point d'entrée de l'application, il démarre le projet
 ├── doc
+│   └── Décisions d'architecture (ARDs), guides, accumulation du savoir
 ├── envs
+│   |└── Environnements Docker de développement et de production
 │   ├── dev
 │   ├── prod
 │   └── shared
-├── migrations
-│
-└── scripts
-
+├── scripts
+│   └── Utilitaires de lancement de l'application et liés aux tests
+└── migrations
 ```
+Dans le répertoire `data`, chaque sous-répertoire représente une fonctionnalité (entité ou groupe d'entités reliées) distincte de l'application.
+Chaque module contient les fichiers suivants :
+
+- `controller.py` : Définitions des points d'accès API pour le module. C'est ici que les requêtes HTTP sont reçues et dirigées
+  vers les fonctions appropriés.
+- `model.py` : Modèles de données **SQLAlchemy** associés à la fonctionnalité.
+- `schema.py` : Schémas qui sont utilisés pour la validation des données entrantes pour le module.
 
 ## Installation
 
@@ -78,8 +82,7 @@ Pour exécuter cette application, vous devez avoir Docker et Docker Compose inst
 
 ##### Sur Mac
 
-1. Téléchargez Docker Desktop pour Mac
-   depuis [Docker Hub](https://hub.docker.com/editions/community/docker-ce-desktop-mac/).
+1. Téléchargez Docker Desktop pour Mac depuis [Docker Hub](https://hub.docker.com/editions/community/docker-ce-desktop-mac/).
 2. Ouvrez le fichier `.dmg` téléchargé et glissez l'icône de Docker dans votre dossier `Applications`.
 3. Ouvrez Docker Desktop depuis vos `Applications`.
 
@@ -104,50 +107,97 @@ Docker Compose est déjà inclus dans Docker Desktop pour Mac, donc aucune étap
 
 Ouvrez une invite de commande ou un terminal.
 
-- lancer les docker 
+Accédez au répertoire "dev" situé dans le répertoire "envs" de l'application. Utilisez la commande suivante pour vous
+déplacer vers ce répertoire :
+
+```sh
+cd /envs/dev
+```
+
+Une fois dans le répertoire "dev", exécutez la commande suivante pour démarrer l'application à l'aide de Docker
+Compose :
+
+```sh
+docker-compose up
+```
+
+Une fois l'application démarrée, vous pouvez accéder à celle-ci en faisant vos requêtes
+à `http://localhost:5001/api/endpoint`.
+
+## Variables d'Environnement
+
+Le projet utilise la variable d'environnement suivante :
+
+- `MIGRATIONS` : Cette variable détermine si des migrations doivent être effectuées sur la base de données. Mettez-la
+  à `1` pour activer les migrations
+
+et à `0` pour les désactiver.
+
+```
+### Lancement de l'application
+
+Ouvrez une invite de commande ou un terminal.
+
+- lancer les docker
+
 ```shell
 docker-compose -f envs/dev/docker-compose.yml up 
 ``` 
 
 sans oublier le .env prévu pour ``envs/dev/back/.env``
 
-# Installation de Pycharm
-Pycharm est l'IDE Python de jetbrains, pour avoir acces au programme par l'IDE sans erreurs demande quelques modification
+# Configuration de Pycharm
 
-### changer l'interpreter pour avoir les modules du projet sans les installer localement
-- aller là ou il y a possiblement écrit ``Python 3.9`` et cliquer dessus
-- ``add new interpreter`` et choisir ``docker-compose``
-- définir le docker-compose suivant : ``envs/dev/docker-compose.yml``
-- si en bas a gauche il y a ecrit ``Remote docker-Compose`` vous avez tout pour commencer
+Pycharm est l'IDE Python de jetbrains, pour avoir acces au programme par l'IDE sans erreurs demande quelques
+modification
 
-### explication des scripts
-- ``tester.sh`` permet de tester toutes les requetes graphql reférencée
-  - les arguments : 
-    - -d permet de définir si les dockers sont dépendant du programme,
-    si utilisé les dockers se lanceront par le testers et vous n'aurez que le retour du tester en lui meme
-    - sinon doit etre rattaché au docker-compose deja lancé
-- ``application_resatart.sh`` permet quand les dockers sont lancés, a l'interruption de ceux-ci par le billet du raccourcis ctrl-c ce relance tout seul en nettoyant la base de donnée
+> **NOTE**: cette configuration a été faites avec la nouvelle UI de Pycharm elle peut ne pas fonctionner sur l'ancienne
 
-### mise en place du format par lint
+### Selection de l'interpreteur python du service docker (permet d'avoir la complétion sans avoir à installer les dépendences sur l'hôte)
 
-``black`` permet de formatter le code 
-- premièrement bien verifier que Black est bien installé : 
+- Cliquer sur le bouton de l'interpréteur en bas a droite (là où il y a probablement écrit ``Python 3.X`` avec la
+  version de python installée sur l'hôte)
+- ``Add New Interpreter``, puis choisir ``On Docker Compose...``
+- Dans le champ ``Configuration files`` sélectionner le fichier suivant: ``envs/dev/docker-compose.yml``
+- Dans le champ ``Service``, choisir le nom du service qui contient flask, i.e. ``flask`` (le champ devrait avoir des
+  valeurs disponibles apres avoir fini l'étape précédente)
+- Appuyer sur ``Next``, attendre la fin de commande lancée par l'IDE puis ``Next``
+- Appuyer sur ``Create`` dans la dernière fenêtre
+- Si en bas a gauche il y a ecrit ``Remote Python 3.X Docker Compose (flask)``, vous avez tout pour commencer !
 
-```shell
-python3 -m pip install Black
-```
+### Mise en place de la visualisation de la base de donnée
 
-- ensuite pour le mettre directement sur la fonction ``format code`` de pycharm il faut aller dans ``parametres>tools>black``, mettre l'``Execution mode`` en ``Binary`` et activer ``on code reformat``
+Cliquez sur le logo qui ressemble a une pile de disque sur le coté droit.\
+Si vous ne le voyez pas, assurez vous que le plugin ``Database tools and SQL`` soit bien installé.\
+Une fois le menu ouvert, cliquez sur ``+ > Data Source > PostgreSQL``\
+Mettez les informations suivantes :
 
-### mise en place de la visualisation de la base de donnée
-
-cliquez sur le logo qui ressemble a une pile de disque sur le coté droit, si vous ne le voyez pas,
-assurez vous que le plugin ``Database tools and SQL`` soit bien installé.
-une fois le menu ouvert, aller dans le logo ``+`` cherchez dans ``data sources`` ``PostgreSQL`` et mettez les informations suivantes : 
-``port: 5432`` ``host: localhost``
-``connect with user and password`` ``password: postgres``  ``user: postgres``
+- ``port: 5432``
+- ``host: localhost``
+- ``connect with user and password``
+    - user: ``postgres``
+    - password: ``postgres``
 
 > **NOTE**: assurez vous bien pendant la connexion avec le docker postgres que le docker soit lancé
 
-une fois connecté vous verrez a droite : ``postgres@localhost`` cliquez sur ``1 of 4``et cochez ``db_dev`` et ``all schema`` dans ``db_dev``
-une fois fait vous aurez vos table dans ``db_dev/public/tables``
+Une fois connecté vous verrez a droite ``postgres@localhost`` et plus a droite un petit bouton avec écrit quelque choise
+du genre ``1 of 4`` ou bien ``4``, cliquez dessus.\
+Cochez ``db_dev`` et ``All schemas`` dans le menu déroulant de ``db_dev``\
+Vous pouvez maintenant accéder à toutes vos table dans ``postgres@localhost > db_dev > public > tables``
+
+# Explication des scripts
+
+- ``tester.sh`` permet de tester l'applicatopm
+    - les arguments :
+        - -d permet de définir si les dockers sont dépendant du programme,
+          si utilisé les dockers se lanceront par le testers et vous n'aurez que le retour du tester en lui meme
+        - sinon doit etre rattaché au docker-compose deja lancé
+- ``application_restart.sh`` permet quand les dockers sont lancés, a l'interruption de ceux-ci par le billet du
+  raccourcis ctrl-c ce relance tout seul en nettoyant la base de donnée
+
+# Mise en place du format par lint
+
+``black`` permet de formatter le code. Pour le relier à la fonction ``format code`` de l'IDE:
+
+- S'assurer que Black est bien installé : ``python3 -m pip install Black``
+- Aller dans ``Settings... > Tools > Black`` et activer ``on code reformat``
