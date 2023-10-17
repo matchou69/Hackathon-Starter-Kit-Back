@@ -1,4 +1,4 @@
-# CHUUT-BACK
+# STARTER-BACK
 
 <img src="./doc/assets/genee.png" alt="Image 1" width="150px">
 
@@ -19,10 +19,10 @@ et [Flask](https://flask.palletsprojects.com/en/2.3.x/).
 
 le répertoire `app`,  contient toutes la logique de l'application:
 
-- `data` : Ce répertoire contient tout le code associé au projet
-- `errors` : Ce fichier contient la gestion des erreurs du projet 
-- `shared` : Ce fichier contient les modules/ librairies externe du projet.
-- `main.py` : ce fichier et le fichier du lancement du projet
+- `data`: Ce répertoire regroupe l'ensemble du code lié aux fonctionnalités centrales de l'application.
+- `errors`: Ce fichier gère la gestion des erreurs et des exceptions de l'application.
+- `shared`: Ce répertoire contient des modules et des bibliothèques externes utilisés par le projet.
+- `main.py`: Ce fichier est le point d'entrée de l'application, il démarre le projet.
 
 ```markdown
 .
@@ -190,7 +190,7 @@ Vous pouvez maintenant accéder à toutes vos table dans ``postgres@localhost > 
 
 # Explication des scripts
 
-- ``tester.sh`` permet de tester toutes les requetes graphql reférencée
+- ``tester.sh`` permet de tester l'applicatopm
     - les arguments :
         - -d permet de définir si les dockers sont dépendant du programme,
           si utilisé les dockers se lanceront par le testers et vous n'aurez que le retour du tester en lui meme
