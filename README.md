@@ -17,36 +17,36 @@ et [Flask](https://flask.palletsprojects.com/en/2.3.x/).
 
 ## Structure du Projet
 
-le répertoire `app`,  contient toutes la logique de l'application:
-
-- `data`: Ce répertoire regroupe l'ensemble du code lié aux fonctionnalités centrales de l'application.
-- `errors`: Ce fichier gère la gestion des erreurs et des exceptions de l'application.
-- `shared`: Ce répertoire contient des modules et des bibliothèques externes utilisés par le projet.
-- `main.py`: Ce fichier est le point d'entrée de l'application, il démarre le projet.
-
 ```markdown
 .
 ├── app
+|   |└── Contient toute la logique de l'application
 │   ├── data
+│   │   └── Données (modèles SQLAlchemy) avec leur logique d'accès/modification (routes API, schémas)
 │   ├── errors
+│   │   └── Erreurs personnalisées de l'application
 │   └── shared
-│
+│       |└── Logique d'initialisation de l'application, modules partagés (fonctions utilitaires, services)
+│       └── main.py
+│           └──Point d'entrée de l'application, il démarre le projet
 ├── doc
+│   └── Décisions d'architecture (ARDs), guides, accumulation du savoir
 ├── envs
+│   |└── Environnements Docker de développement et de production
 │   ├── dev
 │   ├── prod
 │   └── shared
+├── scripts
+│   └── Utilitaires de lancement de l'application et liés aux tests
 └── migrations
 ```
-Dans le répertoire `data`, chaque sous-répertoire représente une fonctionnalité distincte de l'application.
+Dans le répertoire `data`, chaque sous-répertoire représente une fonctionnalité (entité ou groupe d'entités reliées) distincte de l'application.
 Chaque module contient les fichiers suivants :
 
-- `controller.py` : Ce fichier contient les définitions des points d'accès API pour le module. C'est ici que les requêtes HTTP
-  sont reçues et dirigées vers les fonctions appropriés.
-- `model.py` : Ce fichier contient les modèles de données qui définissent la structure des données associées à la fonctionnalitée.
-  module.
-- `schema.py` : Ce répertoire contient les schémas qui sont utilisés pour la validation des données entrantes pour le
-  module.
+- `controller.py` : Définitions des points d'accès API pour le module. C'est ici que les requêtes HTTP sont reçues et dirigées
+  vers les fonctions appropriés.
+- `model.py` : Modèles de données **SQLAlchemy** associés à la fonctionnalité.
+- `schema.py` : Schémas qui sont utilisés pour la validation des données entrantes pour le module.
 
 ## Installation
 
@@ -82,8 +82,7 @@ Pour exécuter cette application, vous devez avoir Docker et Docker Compose inst
 
 ##### Sur Mac
 
-1. Téléchargez Docker Desktop pour Mac
-   depuis [Docker Hub](https://hub.docker.com/editions/community/docker-ce-desktop-mac/).
+1. Téléchargez Docker Desktop pour Mac depuis [Docker Hub](https://hub.docker.com/editions/community/docker-ce-desktop-mac/).
 2. Ouvrez le fichier `.dmg` téléchargé et glissez l'icône de Docker dans votre dossier `Applications`.
 3. Ouvrez Docker Desktop depuis vos `Applications`.
 
@@ -193,7 +192,7 @@ Vous pouvez maintenant accéder à toutes vos table dans ``postgres@localhost > 
         - -d permet de définir si les dockers sont dépendant du programme,
           si utilisé les dockers se lanceront par le testers et vous n'aurez que le retour du tester en lui meme
         - sinon doit etre rattaché au docker-compose deja lancé
-- ``application_resatart.sh`` permet quand les dockers sont lancés, a l'interruption de ceux-ci par le billet du
+- ``application_restart.sh`` permet quand les dockers sont lancés, a l'interruption de ceux-ci par le billet du
   raccourcis ctrl-c ce relance tout seul en nettoyant la base de donnée
 
 # Mise en place du format par lint
