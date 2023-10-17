@@ -1,9 +1,9 @@
 from datetime import timedelta
 
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 
-def generate_token(user, custom_data, duration_hour):
+def generate_token(user, custom_data, duration_hour, isrefresh=False):
     """
     Generate an access token with additional data.
 
@@ -17,5 +17,10 @@ def generate_token(user, custom_data, duration_hour):
     additional_claims = {
         "custom_data": custom_data,
     }
-    access_token = create_access_token(identity=user, expires_delta=expires, additional_claims=additional_claims)
+    access_token = None
+    if isrefresh:
+        access_token = create_refresh_token(identity=user, expires_delta=expires, additional_claims=additional_claims)
+    else:
+        access_token = create_access_token(identity=user, expires_delta=expires, additional_claims=additional_claims)
     return access_token
+
