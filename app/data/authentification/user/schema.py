@@ -1,6 +1,6 @@
 from data.authentification.user.model import UserModel
 from shared.authentification.schema_utils import PhoneNumberField
-from shared.utils import BaseSchema
+from shared.utils.schema import BaseSchema
 
 
 class UserSchema(BaseSchema):

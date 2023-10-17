@@ -14,18 +14,21 @@ from twilio.rest import Client as TwilioClient
 
 from errors import CustomError
 from shared.cloudinary.asset_image_manager import AssetImageManager
+from shared.utils.env_getter import EnvironmentGetter
 
+env_getter = EnvironmentGetter()
 load_dotenv()
-ENV: Final[str] = os.getenv("ENV")
-USER: Final[str] = os.getenv("DB_USER")
-DB_PASS: Final[str] = os.getenv("DB_PASS")
+USER: Final[str] = env_getter.get("DB_USER", "Name of the database user")
+DB_PASS: Final[str] = env_getter.get("DB_PASS", "Password of the database user")
 # db_dev si dev envs, db_qual si c'est prod, db_test si tester
-DB_NAME: Final[str] = os.getenv("DB_NAME")
-DB_IP: Final[str] = os.getenv("DB_IP")
-MIGRATION: Final[str] = os.getenv("MIGRATION")
-ACCOUNT_SID: Final[str] = os.getenv("ACCOUNT_SID")
-AUTH_TWILIO: Final[str] = os.getenv("AUTH_TWILIO")
-JWT_SECRET: Final[str] = os.getenv("JWT_SECRET")
+DB_NAME: Final[str] = env_getter.get("DB_NAME", "Name of the database")
+DB_IP: Final[str] = env_getter.get("DB_IP", "Adress of the database")
+MIGRATION: Final[str] = env_getter.get("MIGRATION", "Whether to activate Flask-Migrate")
+env_scope_twilio = env_getter.scope("Twilio configuration (Phone authentication API)")
+ACCOUNT_SID: Final[str] = env_getter.get("ACCOUNT_SID", "Twilio account id")
+AUTH_TWILIO: Final[str] = env_getter.get("AUTH_TWILIO", "Twilio account password")
+env_scope_jwt = env_getter.scope("JWT configuration")
+JWT_SECRET: Final[str] = env_getter.get("JWT_SECRET", "JWT secret key used for encryption/decryption of JWTs")
 if JWT_SECRET is None:
     raise Exception("JWT_SECRET is not defined in the .env file")
 

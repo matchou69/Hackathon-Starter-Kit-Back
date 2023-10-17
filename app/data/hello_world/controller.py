@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 from data.hello_world.model import HelloWorldModel
 from data.hello_world.schema import HelloWorldSchema
-from shared.utils import BaseCRUDHelper
+from shared.utils.crud_helper import BaseCRUDHelper
 
 NAME = "helloworld"
 blueprint = Blueprint(f"{NAME}_blueprint", __name__)

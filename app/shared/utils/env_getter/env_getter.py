@@ -1,6 +1,6 @@
 import os
 from collections import defaultdict
-from typing import Union, List, cast, TypeVar, Set, Dict, TypedDict
+from typing import List, Dict
 from uuid import uuid4
 
 from .errors import OneVariableErrorDict, EnvironmentVariableNotFound, EnvironmentErrorDict, \
@@ -29,7 +29,7 @@ class EnvironmentGetter:
         self.scopes: Dict[int, EnvironmentGetter.Scope] = dict()
         self.size = 0
 
-    def get(self, variable_name, required=False, description=None, _scope: Scope | None = None):
+    def get(self, variable_name, description=None, required=True, _scope: Scope | None = None):
         value = os.getenv(variable_name)
         self.variables.append(variable_name)
         self.required_list.append(required)

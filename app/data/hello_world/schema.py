@@ -1,5 +1,5 @@
 from data.hello_world.model import HelloWorldModel
-from shared.utils import BaseSchema
+from shared.utils.schema import BaseSchema
 
 
 class HelloWorldSchema(BaseSchema):
