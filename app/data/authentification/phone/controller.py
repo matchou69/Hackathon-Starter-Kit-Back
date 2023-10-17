@@ -34,8 +34,9 @@ def send_msg():
 def login():
     data = request.get_json()
     login_validation_schema.validate(data)
-    token = jwt_manager.authenticate_by_phone(data['phone'], data['code'])
-    return {"token": token}, 200
+    tokens = jwt_manager.authenticate_by_phone(data['phone'], data['code'])
+    return {"token": tokens[0],
+            "refresh_token" : tokens[1]}, 200
 
 
 @jwt_required(refresh=True)
