@@ -1,7 +1,7 @@
 import sqlalchemy.exc
 
 from shared import db
-from shared.authentification.errors import EntityNotFoundError, MultipleResultsFoundError
+from errors.database_errors import EntityNotFoundError, MultipleResultsFoundError
 
 
 class Registry:

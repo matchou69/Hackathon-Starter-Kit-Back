@@ -2,7 +2,6 @@ import bcrypt
 
 from data.authentification.user.model import UserModel
 from data.authentification.user.schema import UserSchema
-from shared.authentification.errors import EntityNotFoundError
 from shared.authentification.errors.password_error import WrongPasswordError
 from shared.authentification.errors.username_not_found_error import UsernameNotFoundError
 from shared.utils.registry import Registry

@@ -1,5 +1,4 @@
 import logging
-import os
 import sys
 from typing import Final
 
@@ -10,10 +9,9 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import ValidationError
-from twilio.rest import Client as TwilioClient
 
 from errors import CustomError
-from shared.authentification.errors import EntityNotFoundError
+from errors.database_errors import EntityNotFoundError
 from shared.cloudinary.asset_image_manager import AssetImageManager
 from shared.twilio.twilio_manager import TwilioManager
 from shared.utils.env_getter import EnvironmentGetter
