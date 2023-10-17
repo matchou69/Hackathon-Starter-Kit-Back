@@ -50,8 +50,8 @@ class EnvironmentGetter:
         return value
 
     def fail_if_missing(self):
-        def filter_errors(i, items):
-            variable, required, value, description = items
+        def filter_errors(x):
+            i, (variable, required, value, description) = x
             return required and (value is None)
 
         error_items = list(filter(
@@ -76,9 +76,11 @@ class EnvironmentGetter:
             "errors_scoped": [{
                 "scope_description": scope.description,
                 "variables": variable_errors
-            } for scope, variable_errors in errors_scoped_dict],
+            } for scope, variable_errors in errors_scoped_dict.items()],
             "errors_not_scoped": errors_not_scoped
         }
 
         raise SeveralEnvironmentVariablesNotFound(errors)
 
+    def scope(self, description: str):
+        return EnvironmentGetter.Scope(self, description)

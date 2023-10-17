@@ -23,7 +23,7 @@ class EnvironmentVariableNotFound(CustomError):
         message = f"Missing required environment variable named {variable}"
         if description is not None:
             message += f": {description}"
-        super(message)
+        super().__init__(message)
 
 
 class SeveralEnvironmentVariablesNotFound(CustomError):
@@ -54,5 +54,5 @@ class SeveralEnvironmentVariablesNotFound(CustomError):
                 message += "---"
                 message += SeveralEnvironmentVariablesNotFound._format_list_error(scope_error["variables"]) + "\n"
 
-        super(message)
+        super().__init__(message)
 
