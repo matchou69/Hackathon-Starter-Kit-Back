@@ -4,7 +4,6 @@ Content-Type: application/json
 
 {
   "username": "Guilheim Chataing",
-  "password": "test",
   "phone": "+33769352015"
 }
 
@@ -29,5 +28,5 @@ Content-Type: application/json
 
 {
   "phone": "+33769352015",
-  "code": "023509"
+  "code": "730167"
 }

@@ -1,12 +1,11 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from data.authentification.phone.schema import LoginValidationSchema
-from data.authentification.user.model import UserModel
-from data.authentification.user.schema import UserSchema
+from data.authentification.phone.schemas.login_validation_schema import LoginValidationSchema
+from data.authentification.user.models.phone_user_model import PhoneUserModel as UserModel
+from data.authentification.user.schemas.phone_user_schema import UserSchema
 from shared.authentification.managers import PhoneAuthManager
 from shared.authentification.managers.jwt_manager import JWTGenerationManager
-from shared.utils.crud_helper import BaseCRUDHelper
 from shared.utils.registry import Registry
 
 NAME = "phone_auth"

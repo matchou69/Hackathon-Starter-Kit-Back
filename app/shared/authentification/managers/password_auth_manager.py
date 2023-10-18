@@ -1,7 +1,7 @@
 import bcrypt
 
-from data.authentification.user.model import UserModel
-from data.authentification.user.schema import UserSchema
+from data.authentification.user.models.password_user_model import PasswordUserModel as UserModel
+from data.authentification.user.schemas.password_user_schema import UserSchema
 from shared.authentification.errors.password_error import WrongPasswordError
 from shared.authentification.errors.username_not_found_error import UsernameNotFoundError
 from shared.utils.registry import Registry
@@ -29,6 +29,7 @@ class PasswordAuthManager:
         """
 
         users = self.user_registry.get_all_where(username=username)
+        print(users, flush=True)
         if len(users) == 0:
             raise UsernameNotFoundError(username)
         for user in users:

@@ -1,11 +1,8 @@
 import random
 
-from twilio.base.exceptions import TwilioRestException
-
-from data.authentification.user.model import UserModel
-from shared import db, twilio_manager
+from data.authentification.user.models.phone_user_model import PhoneUserModel as UserModel
+from shared import twilio_manager
 from shared.authentification.errors import IncorrectVerificationCodeError
-from shared.utils.registry import Registry
 
 
 class PhoneAuthManager:
@@ -68,4 +65,5 @@ class PhoneAuthManager:
         """
         if code == self.code_pass.get(user.id):
             self.code_pass.pop(user.id)
+            return 'ok'
         raise IncorrectVerificationCodeError()

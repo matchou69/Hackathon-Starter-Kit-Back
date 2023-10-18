@@ -1,1 +1,1 @@
-from .controller import blueprint
+from data.authentification.password.controllers.password_controller import blueprint
