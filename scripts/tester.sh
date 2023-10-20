@@ -3,7 +3,7 @@
 # Get the current script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-CONTAINER_NAME='chuut_back'
+CONTAINER_NAME='starter_back'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 BLUE='\033[0;34m'
