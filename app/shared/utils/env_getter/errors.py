@@ -55,4 +55,3 @@ class SeveralEnvironmentVariablesNotFound(CustomError):
                 message += SeveralEnvironmentVariablesNotFound._format_list_error(scope_error["variables"]) + "\n"
 
         super().__init__(message)
-

@@ -8,7 +8,6 @@ from .errors import OneVariableErrorDict, EnvironmentVariableNotFound, Environme
 
 
 class EnvironmentGetter:
-
     class Scope:
         def __init__(self, env_getter: 'EnvironmentGetter', description: str):
             self.env_getter = env_getter

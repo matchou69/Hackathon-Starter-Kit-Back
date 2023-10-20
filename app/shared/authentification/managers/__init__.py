@@ -1,2 +1,2 @@
-from .phone_auth_manager import PhoneAuthManager
 from .password_auth_manager import PasswordAuthManager
+from .phone_auth_manager import PhoneAuthManager

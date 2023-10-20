@@ -1,5 +1,4 @@
-from data.authentification.user.model import UserModel
-from shared.authentification.schema_utils import PhoneNumberField
+from data.authentification.user.models.user_model import UserModel
 from shared.authentification.schema_utils.password_field import PasswordField
 from shared.utils.schema import BaseSchema
 
@@ -9,5 +8,4 @@ class UserSchema(BaseSchema):
         model = UserModel
         load_instance = True
 
-    phone = PhoneNumberField()
     password = PasswordField()

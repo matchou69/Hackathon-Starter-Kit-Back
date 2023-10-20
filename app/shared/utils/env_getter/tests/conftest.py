@@ -1,6 +1,6 @@
 import os
-import pytest
 
+import pytest
 
 TEMP_ENV_VARS = {
     '__VAR1': '1',
@@ -50,4 +50,3 @@ def tests_setup_and_teardown():
     yield
     os.environ.clear()
     os.environ.update(old_environ)
-

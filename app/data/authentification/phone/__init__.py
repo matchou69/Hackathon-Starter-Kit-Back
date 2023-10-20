@@ -1,1 +1,1 @@
-from .controller import blueprint
+from data.authentification.phone.controllers.phone_controller import blueprint

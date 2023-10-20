@@ -1,8 +1,8 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
-from data.hello_world.model import HelloWorldModel
-from data.hello_world.schema import HelloWorldSchema
+from data.hello_world.models.hello_world_model import HelloWorldModel
+from data.hello_world.schemas.hello_world_schema import HelloWorldSchema
 from shared.utils.crud_helper import BaseCRUDHelper
 
 NAME = "helloworld"

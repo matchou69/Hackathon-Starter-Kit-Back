@@ -1,11 +1,8 @@
 import random
 
-from twilio.base.exceptions import TwilioRestException
-
-from data.authentification.user.model import UserModel
-from shared import db, twilio_manager
+from data.authentification.user.models.user_model import UserModel
+from shared import twilio_manager
 from shared.authentification.errors import IncorrectVerificationCodeError
-from shared.utils.registry import Registry
 
 
 class PhoneAuthManager:
@@ -14,6 +11,7 @@ class PhoneAuthManager:
 
     This module provides functions for registering user profiles, and authenticating users based on their phone number.
     """
+
     code_pass = {}
 
     def generate_verification_code(self):
@@ -22,7 +20,7 @@ class PhoneAuthManager:
 
         :return: A randomly generated 6-digit verification code.
         """
-        code = ''.join(str(random.randint(0, 9)) for _ in range(6))
+        code = "".join(str(random.randint(0, 9)) for _ in range(6))
         return code
 
     def send_verification_message(self, new_user: UserModel):
@@ -35,8 +33,8 @@ class PhoneAuthManager:
 
         twilio_manager.send_message(
             to=new_user.phone,
-            from_='+13345183087',
-            body='Bonjour ' + new_user.username + ' vous avez été enregistré à GeneeTech',
+            from_="+13345183087",
+            body="Bonjour " + new_user.username + " vous avez été enregistré à GeneeTech",
         )
 
     def send_phone_msg(self, user: UserModel):
@@ -51,8 +49,8 @@ class PhoneAuthManager:
         code = self.generate_verification_code()
         twilio_manager.send_message(
             to=user.phone,
-            from_='+13345183087',
-            body='Bonjour ' + user.username + ' votre code est : ' + code,
+            from_="+13345183087",
+            body="Bonjour " + user.username + " votre code est : " + code,
         )
         self.code_pass[user.id] = code
 
@@ -68,4 +66,5 @@ class PhoneAuthManager:
         """
         if code == self.code_pass.get(user.id):
             self.code_pass.pop(user.id)
+            return {"status": "SUCCESS"}
         raise IncorrectVerificationCodeError()
