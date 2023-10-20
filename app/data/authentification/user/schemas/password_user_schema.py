@@ -1,4 +1,4 @@
-from data.authentification.user.models.password_user_model import PasswordUserModel as UserModel
+from data.authentification.user.models.user_model import UserModel
 from shared.authentification.schema_utils.password_field import PasswordField
 from shared.utils.schema import BaseSchema
 

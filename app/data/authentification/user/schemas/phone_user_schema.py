@@ -1,4 +1,4 @@
-from data.authentification.user.models.phone_user_model import PhoneUserModel as UserModel
+from data.authentification.user.models.user_model import UserModel
 from shared.authentification.schema_utils import PhoneNumberField
 from shared.utils.schema import BaseSchema
 

@@ -44,12 +44,10 @@ twilio_manager = TwilioManager(ACCOUNT_SID, AUTH_TWILIO)
 def create_app():
     app = Flask(__name__)
     print(f"Using {DB_NAME}")
-    app.config[
-        "SQLALCHEMY_DATABASE_URI"
-    ] = f"postgresql://{USER}:{DB_PASS}@{DB_IP}:5432/{DB_NAME}"
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{USER}:{DB_PASS}@{DB_IP}:5432/{DB_NAME}"
     app.config["JWT_SECRET_KEY"] = JWT_SECRET
 
-    url_prefix = '/api'
+    url_prefix = "/api"
 
     db.init_app(app)
     jwt.init_app(app)
@@ -62,10 +60,11 @@ def create_app():
     app.logger.setLevel(logging.INFO)
 
     from data.hello_world import blueprint as hello_world_blueprint
-    from data.authentification.password import blueprint as password_auth_blueprint
+    from data.authentification.password import password_blueprint
     from data.authentification.phone import blueprint as phone_auth_blueprint
+
     app.register_blueprint(hello_world_blueprint, url_prefix=url_prefix)
-    app.register_blueprint(password_auth_blueprint, url_prefix=url_prefix)
+    app.register_blueprint(password_blueprint, url_prefix=url_prefix)
     app.register_blueprint(phone_auth_blueprint, url_prefix=url_prefix)
 
     @app.errorhandler(CustomError)
