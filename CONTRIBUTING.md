@@ -103,3 +103,96 @@ En cas de changement de dépendance directe (ajout, modification, suppression) :
       ```
 La commande pip-compile permet de générer les fichiers requirements.txt et requirements-dev.txt, qui contiennent les dépendances
 directes et indirectes et leurs versions figées.
+
+## Workflow des controllers
+
+Le processus de création d'un contrôleur est le suivant :
+- Créez un plan (blueprint) qui enregistrera toutes les routes pour ce contrôleur.
+- Enregistrez le blueprint à l'application avec app.register_blueprint(...) dans shared/__init__.py
+- Pour chaque route :
+  - (Optionnel) __Protégez__ la route pour les clients possédant un JWT (supposant que le JWT est utilisé en tant
+    ___access token___) en ajoutant le decorateur `@flask_jwt_extended.jwt_required()`
+  - (Optionnel) __Obtenez l'identité__ du client en utilisant `flask_jwt_extended.get_jwt_identity()` (supposant que
+    le champ 'identity' du JWT ait bien été configuré lors de la création du token)
+  - (Routes PUT, POST, PATCH) Recuperer le __payload__ de la requete avec `flask.request.get_json()`
+  - Si la requete est triviale, c.a.d. __Create/Read/Update/Delete__:
+    - Finir la requete en utilisant la classe utilitaire
+      `BaseCRUDHelper`. Les methodes `handle_post/put` s'occuperont de valider les donnees avec le schema fourni au
+      constructeur
+  - Sinon, la route necessite de la __logique métier__ :
+    - Valider les données avec un [schema marshamllow](#schemas)
+    - Effactuer les calculs métiers avec un [service](#services)
+
+## Schemas
+
+Les schemas marshamllow remplissent deux roles en meme temps:
+- __Serialisation* / deserialisation__** des donnees
+- __Validation__ des donnees
+
+*Sérialisées ->  __Objets Python__\
+**Désérialisées ->  __Dictionnaires Python__
+
+
+### Vocabulaire
+
+Dans marshmallow '__load__' = __deserialize__ et '__dump__' = __serialize__:
+
+__[payload: JSON]__ ----load--->  __[instance: Object]__\
+__[payload: JSON]__ <---dump----  __[instance: Object]__
+
+### Definir un schema
+
+- Un schema __marshmallow__ 'pur'
+
+```python3
+class Album:
+    title: str
+    release_date: datetime.date
+
+
+class AlbumSchema(Schema):
+    title = fields.Str()
+    release_date = fields.Date()
+```
+
+- Un schema __marshmallow_sqlalchemy__
+
+```python3
+class AlbumModel:
+    title: Column(String(255))
+    release_date: Column(Date())
+
+class AlbumSchema(SQLAlchemySchema):
+    class Meta:
+        model = AlbumModel
+        load_instance = True  # Optional: deserialize to model instances
+        include_fk = True # Optional: To include foreign fields
+        include_relationships = True # Optional: To include relationships (become a fields.Related not fields.Nested)
+
+    title = auto_field()
+    release_date = auto_field()
+
+# Ou avec SQLAlchemyAutoSchema
+
+class AlbumSchema(SQLAlchemySchema):
+    class Meta:
+        model = AlbumModel
+        load_instance = True  # Optional: deserialize to model instances
+        include_fk = True # Optional: To include foreign fields
+        include_relationships = True # Optional: To include relationships (become a fields.Related not fields.Nested)
+```
+
+Note: SQLAlchemySchema n'inclut pas les `sqlalchemy.relationship()`, juste les `sqlalchemy.Column()`
+
+Regarder aussi:
+- [marshmallow.fields.Nested()](https://marshmallow.readthedocs.io/en/stable/nesting.html)
+- [read_only et dump_only](https://marshmallow.readthedocs.io/en/stable/quickstart.html#read-only-and-write-only-fields)
+- [data_key](https://marshmallow.readthedocs.io/en/stable/quickstart.html#specifying-serialization-deserialization-keys)
+  pour changer le nom d'un field du dictionnaire en un autre nom dans l'objet
+
+
+## Services
+
+Les services sont des classes utilitaires regroupant la logique métier propre a une entité\
+Leur role est d'encapsuler cette logique (creer des méthodes dont le nom explicite la tache abstrite effectuée) et
+donc rendre le code des controllers clair
