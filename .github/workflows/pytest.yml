@@ -1,0 +1,29 @@
+name: Execute pytest
+
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+  push:
+    branches: [ main, release ]
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: setup secrets environnement
+        run: |
+          echo "CLOUD_NAME=${{ secrets.CLOUD_NAME }}" >> ./.github/workflows/.env
+          echo "CLOUD_KEY=${{ secrets.CLOUD_KEY }}" >> ./.github/workflows/.env
+          echo "CLOUD_SECRET=${{ secrets.CLOUD_SECRET }}" >> ./.github/workflows/.env
+
+      - name: Create .env file
+        run: cp envs/dev/back/.env.example envs/dev/back/.env
+
+      - name: Execute pytest
+        id: test
+        run: |
+          bash scripts/tester.sh -d
