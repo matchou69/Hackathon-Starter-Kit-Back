@@ -68,5 +68,6 @@ def test_fail_if_missing_scope_error(temp_env_vars, unset_env_vars, unset_env_va
         env_getter.fail_if_missing()
     print(error, flush=True)
     for description in unset_env_vars_descriptions:
-        assert str(error).count(
-            description) >= 2, f"Description of environment variable not printed in the error in both scopes"
+        assert\
+            str(error).count(description) >= 2,\
+            f"Description of environment variable not printed in the error in both scopes"
