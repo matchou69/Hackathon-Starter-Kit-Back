@@ -43,12 +43,14 @@ Genee est une entreprise Française, les documentations et les commits sont en f
 └── migrations
 ```
 Dans le répertoire `data`, chaque sous-répertoire représente une fonctionnalité (entité ou groupe d'entités reliées) distincte de l'application.
-Chaque module contient les fichiers suivants :
+Chaque module contient les modules suivants :
 
-- `controller.py` : Définitions des points d'accès API pour le module. C'est ici que les requêtes HTTP sont reçues et dirigées
-  vers les fonctions appropriés.
-- `model.py` : Modèles de données **SQLAlchemy** associés à la fonctionnalité.
-- `schema.py` : Schémas qui sont utilisés pour la validation des données entrantes pour le module.
+- `controller` : Définitions des points d'accès API pour le module. C'est ici que les requêtes HTTP sont reçues et dirigées
+  vers les fonctions appropriés. Les routes sont regroupées dans un `flask.Blueprint`
+- `model` : Modèles de données **SQLAlchemy** associés à la fonctionnalité.
+- `schema` : Schémas qui sont utilisés pour la validation des données entrantes pour le module.
+- `service` : Classe utilitaire pour la logique métier associée à la fonctionnalité
+- `test`
 
 ## Installation
 
