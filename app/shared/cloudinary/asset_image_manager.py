@@ -5,6 +5,7 @@ import cloudinary
 import cloudinary.api
 import cloudinary.uploader
 
+
 PREFIX = "STARTER/"
 
 
@@ -54,3 +55,13 @@ class AssetImageManager:
         :returns: first item : image_url ; second item : image_id
         """
         cloudinary.api.delete_resources(image_id)
+
+
+def get_cloudinary_manager():
+    from main import app
+
+    return AssetImageManager(
+        app.config["CLOUD_NAME"],
+        app.config["CLOUD_KEY"],
+        app.config["CLOUD_SECRET"]
+    )

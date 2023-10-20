@@ -29,7 +29,7 @@ class EnvironmentVariableNotFound(CustomError):
 class SeveralEnvironmentVariablesNotFound(CustomError):
     @staticmethod
     def _format_one_error(err: OneVariableErrorDict) -> str:
-        message_one = err["variable"]
+        message_one = "- " + err["variable"]
         if err["description"] is not None:
             message_one += f": {err['description']}"
         return message_one
@@ -46,12 +46,12 @@ class SeveralEnvironmentVariablesNotFound(CustomError):
         message = f"One or several environment variables are missing.\n"
         if len(errors["errors_not_scoped"]) > 0:
             message += SeveralEnvironmentVariablesNotFound._format_list_error(errors["errors_not_scoped"]) + "\n"
+            message += "\n"
 
         if len(errors["errors_scoped"]) > 0:
             for scope_error in errors["errors_scoped"]:
-                message += "---"
-                message += "Error scope: " + scope_error["scope_description"] + "\n"
-                message += "---"
+                message += "Environment scope: " + scope_error["scope_description"] + "\n"
                 message += SeveralEnvironmentVariablesNotFound._format_list_error(scope_error["variables"]) + "\n"
+                message += "\n"
 
         super().__init__(message)

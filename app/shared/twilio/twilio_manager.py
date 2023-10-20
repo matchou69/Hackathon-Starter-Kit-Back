@@ -17,3 +17,9 @@ class TwilioManager:
             )
         except TwilioRestException as twilio_error:
             raise CustomTwilioError(twilio_error)
+
+
+def get_twilio_manager():
+    from main import app
+
+    return TwilioManager(app.config["ACCOUNT_SID"], app.config["AUTH_TWILIO"])
