@@ -29,7 +29,7 @@ def register():
 @blueprint.post(f"/{NAME}/login")
 def login():
     data = request.get_json()
-    login_validation_schema.validate(data)
+    login_validation_schema.load(data)
     user = auth_manager.authenticate_user_by_name(data["username"], data["password"])
     return jwt_manager.generate_access_and_refresh_tokens(user.id), 200
 

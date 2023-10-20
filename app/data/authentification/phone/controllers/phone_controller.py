@@ -31,7 +31,7 @@ def register():
 @blueprint.post(f"/{NAME}/send_sms")
 def send_msg():
     data = request.get_json()
-    send_sms_validation_schema.validate(data)
+    send_sms_validation_schema.load(data)
     user = user_registry.get_one_or_fail_where(phone=data["phone"])
     auth_manager.send_phone_msg(user)
     return {"status": "SUCCESS"}, 200
@@ -40,7 +40,7 @@ def send_msg():
 @blueprint.post(f"/{NAME}/login")
 def login():
     data = request.get_json()
-    login_validation_schema.validate(data)
+    login_validation_schema.load(data)
     user = user_registry.get_one_or_fail_where(phone=data["phone"])
     auth_manager.authenticate_by_phone(user, data["code"])
     tokens = jwt_manager.generate_access_and_refresh_tokens(user.id)
