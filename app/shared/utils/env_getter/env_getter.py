@@ -17,8 +17,8 @@ class EnvironmentGetter:
         def __hash__(self):
             return hash(self.uuid)
 
-        def get(self, variable_name, required=False, description=None):
-            self.env_getter.get(variable_name, required=required, description=description, _scope=self)
+        def get(self, variable_name, description=None, required=False):
+            return self.env_getter.get(variable_name, required=required, description=description, _scope=self)
 
     def __init__(self):
         self.variables: List[str] = []

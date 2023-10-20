@@ -1,8 +1,6 @@
 import logging
 import sys
-from typing import Final
 
-from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -12,46 +10,25 @@ from marshmallow import ValidationError
 
 from errors import CustomError
 from errors.database_errors import EntityNotFoundError
-from shared.cloudinary.asset_image_manager import AssetImageManager
-from shared.twilio.twilio_manager import TwilioManager
-from shared.utils.env_getter import EnvironmentGetter
-
-env_getter = EnvironmentGetter()
-load_dotenv()
-USER: Final[str] = env_getter.get("DB_USER", "Name of the database user")
-DB_PASS: Final[str] = env_getter.get("DB_PASS", "Password of the database user")
-# db_dev si dev envs, db_qual si c'est prod, db_test si tester
-DB_NAME: Final[str] = env_getter.get("DB_NAME", "Name of the database")
-DB_IP: Final[str] = env_getter.get("DB_IP", "Adress of the database")
-MIGRATION: Final[str] = env_getter.get("MIGRATION", "Whether to activate Flask-Migrate")
-env_scope_twilio = env_getter.scope("Twilio configuration (Phone authentication API)")
-ACCOUNT_SID: Final[str] = env_getter.get("ACCOUNT_SID", "Twilio account id")
-AUTH_TWILIO: Final[str] = env_getter.get("AUTH_TWILIO", "Twilio account password")
-env_scope_jwt = env_getter.scope("JWT configuration")
-JWT_SECRET: Final[str] = env_getter.get("JWT_SECRET", "JWT secret key used for encryption/decryption of JWTs")
-if JWT_SECRET is None:
-    raise Exception("JWT_SECRET is not defined in the .env file")
 
 db: SQLAlchemy = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
-twilio_manager = TwilioManager(ACCOUNT_SID, AUTH_TWILIO)
-
 
 # image_manager: AssetImageManager = AssetImageManager(CLOUD_NAME, CLOUD_KEY, CLOUD_SECRET)
 
 
-def create_app():
+def create_app(config):
     app = Flask(__name__)
-    print(f"Using {DB_NAME}")
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{USER}:{DB_PASS}@{DB_IP}:5432/{DB_NAME}"
-    app.config["JWT_SECRET_KEY"] = JWT_SECRET
+    app.config.from_object(config)
+    print(f"Using {app.config['DB_NAME']}")
+    print(app.config)
 
     url_prefix = "/api"
 
     db.init_app(app)
     jwt.init_app(app)
-    if MIGRATION == "1":
+    if app.config["MIGRATION"] == "1":
         migrate.init_app(app, db)
 
     handler = logging.StreamHandler(sys.stdout)
