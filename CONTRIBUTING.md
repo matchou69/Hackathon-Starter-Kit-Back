@@ -120,12 +120,12 @@ Le processus de création d'un contrôleur est le suivant :
       `BaseCRUDHelper`. Les methodes `handle_post/put` s'occuperont de valider les donnees avec le schema fourni au
       constructeur
   - Sinon, la route necessite de la __logique métier__ :
-    - Valider les données avec un [schema marshamllow](#schemas)
-    - Effactuer les calculs métiers avec un [service](#services)
+    - Valider les données avec un [schema marshamallow](#schemas)
+    - Effaectuer les calculs métiers avec un [service](#services)
 
 ## Schemas
 
-Les schemas marshamllow remplissent deux roles en meme temps:
+Les schemas marshamallow remplissent deux roles en meme temps:
 - __Serialisation* / deserialisation__** des donnees
 - __Validation__ des donnees
 
