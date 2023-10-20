@@ -2,10 +2,9 @@ name: Execute pytest
 
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
+    types: [ opened, synchronize ]
   push:
+    branches: [ main, release ]
 
 jobs:
   pytest:
