@@ -1,11 +1,10 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from data.authentification.password.schemas.Login_validation_schema import LoginValidationSchema
+from data.authentification.password.schemas.login_validation_schema import LoginValidationSchema
 from data.authentification.user.models.password_user_model import PasswordUserModel as UserModel
 from data.authentification.user.schemas.password_user_schema import UserSchema
 from shared.authentification.managers import PasswordAuthManager
-from flask_jwt_extended import jwt_required, get_jwt_identity
-
 from shared.authentification.managers.jwt_manager import JWTGenerationManager
 from shared.utils.registry import Registry
 

@@ -77,7 +77,6 @@ def create_app():
     def handle_not_found_error(error):
         return str(error), 404
 
-
     CORS(app, resources={r"/*": {"origins": "*"}})
 
     with app.app_context():

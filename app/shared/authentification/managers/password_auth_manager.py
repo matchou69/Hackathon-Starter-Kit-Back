@@ -29,7 +29,6 @@ class PasswordAuthManager:
         """
 
         users = self.user_registry.get_all_where(username=username)
-        print(users, flush=True)
         if len(users) == 0:
             raise UsernameNotFoundError(username)
         for user in users:

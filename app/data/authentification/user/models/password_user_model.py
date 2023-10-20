@@ -11,3 +11,4 @@ class PasswordUserModel(db.Model):
     )
     username = db.Column(db.String)
     password = db.Column(db.String)
+    mail = Column(db.String, unique=True)

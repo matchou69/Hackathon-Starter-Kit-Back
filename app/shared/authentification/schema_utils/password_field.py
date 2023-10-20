@@ -1,7 +1,5 @@
-import re
-
 import bcrypt
-from marshmallow import fields, ValidationError
+from marshmallow import fields
 
 
 class PasswordField(fields.Field):

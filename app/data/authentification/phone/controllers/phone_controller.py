@@ -34,7 +34,7 @@ def send_msg():
     send_sms_validation_schema.validate(data)
     user = user_registry.get_one_or_fail_where(phone=data["phone"])
     auth_manager.send_phone_msg(user)
-    return 'ok', 200
+    return {'status': 'SUCCESS'}, 200
 
 
 @blueprint.post(f'/{NAME}/login')

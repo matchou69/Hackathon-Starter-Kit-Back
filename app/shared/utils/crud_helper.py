@@ -1,9 +1,3 @@
-import sys
-import traceback
-
-from marshmallow import ValidationError
-
-from shared import db
 from shared.utils.registry import Registry
 from shared.utils.schema import BaseSchema
 
