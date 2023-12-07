@@ -7,18 +7,16 @@ from shared.utils.env_getter.errors import EnvironmentVariableNotFound, SeveralE
 
 
 def test_get_or_fail_no_error(unset_env_vars):
-    env_getter = EnvironmentGetter()
     name, value = unset_env_vars[0], "aaa"
     os.environ[name] = value
-    res = env_getter.get_or_fail(name)
+    res = EnvironmentGetter.get_or_fail(name)
     assert res == value
 
 
 def test_get_or_fail_error(unset_env_vars):
-    env_getter = EnvironmentGetter()
     name, value = unset_env_vars[0], "aaa"
     with pytest.raises(EnvironmentVariableNotFound) as err:
-        env_getter.get_or_fail(name)
+        EnvironmentGetter.get_or_fail(name)
 
 
 def test_fail_if_missing_no_error(temp_env_vars):

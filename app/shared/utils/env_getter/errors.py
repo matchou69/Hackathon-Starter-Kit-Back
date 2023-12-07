@@ -1,24 +1,22 @@
 from typing import List, TypedDict
 
-from errors import CustomError
 
-
-class OneVariableErrorDict(TypedDict):
+class OneVariableErrorData(TypedDict):
     variable: str
     description: str | None
 
 
-class OneScopeErrorDict(TypedDict):
+class OneScopeErrorData(TypedDict):
     scope_description: str
-    variables: List[OneVariableErrorDict]
+    variables: List[OneVariableErrorData]
 
 
-class EnvironmentErrorDict(TypedDict):
-    errors_scoped: List[OneScopeErrorDict]
-    errors_not_scoped: List[OneVariableErrorDict]
+class EnvironmentErrorData(TypedDict):
+    errors_scoped: List[OneScopeErrorData]
+    errors_not_scoped: List[OneVariableErrorData]
 
 
-class EnvironmentVariableNotFound(CustomError):
+class EnvironmentVariableNotFound(Exception):
     def __init__(self, variable: str, description: str | None):
         message = f"Missing required environment variable named {variable}"
         if description is not None:
@@ -26,23 +24,23 @@ class EnvironmentVariableNotFound(CustomError):
         super().__init__(message)
 
 
-class SeveralEnvironmentVariablesNotFound(CustomError):
+class SeveralEnvironmentVariablesNotFound(Exception):
     @staticmethod
-    def _format_one_error(err: OneVariableErrorDict) -> str:
+    def _format_one_error(err: OneVariableErrorData) -> str:
         message_one = "- " + err["variable"]
         if err["description"] is not None:
             message_one += f": {err['description']}"
         return message_one
 
     @staticmethod
-    def _format_list_error(variable_errors: List[OneVariableErrorDict]) -> str:
+    def _format_list_error(variable_errors: List[OneVariableErrorData]) -> str:
         message = "\n".join(
             SeveralEnvironmentVariablesNotFound._format_one_error(err)
             for err in variable_errors
         )
         return message
 
-    def __init__(self, errors: EnvironmentErrorDict):
+    def __init__(self, errors: EnvironmentErrorData):
         message = f"One or several environment variables are missing.\n"
         if len(errors["errors_not_scoped"]) > 0:
             message += SeveralEnvironmentVariablesNotFound._format_list_error(errors["errors_not_scoped"]) + "\n"

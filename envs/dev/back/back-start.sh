@@ -1,28 +1,32 @@
 #!/bin/bash
 
-pg_isready -d ${DB_NAME} -h postgres -p 5432 -U postgres
+all_missing_env_vars=()
+check_env_var() {
+  var_value=$(printf '%s\n' "${!1}")
+  if [ -z $var_value ]; then
+    all_missing_env_vars+=( $1 )
+  fi
+}
+check_env_var DB_USER
+check_env_var DB_NAME
+check_env_var DB_IP
+check_env_var DB_PORT
+
+if [ ${#all_missing_env_vars[@]} -ne 0 ]; then
+    echo "Missing environment variables: $all_missing_env_vars"
+    exit 1
+fi
+
+pg_isready -d ${DB_NAME} -h ${DB_IP} -p ${DB_PORT} -U ${DB_USER}
 while [[ $? -ne 0 ]] ; do
   echo "Waiting for postgres server ready to accept connections..."
   sleep 2
-  pg_isready -d ${DB_NAME}  -h postgres -p 5432 -U postgres
+  pg_isready -d ${DB_NAME} -h ${DB_IP} -p ${DB_PORT} -U ${DB_USER}
 done
 
 echo "Postgres server ready to accept connections, starting flask server"
 
 
 export FLASK_APP=main.py
-#if [ $MIGRATION == 1 ]; then
-#  flask db migrate
-#  flask db upgrade
-#fi
-#uwsgi --enable-threads --ini app/uwsgi.ini
-#bandit -r .
-# python -m debugpy --listen localhost:5678 --wait-for-client app/main.py
 
-if [ "$TEST_MODE" == "true" ]; then
-    pytest -p no:warnings
-    exit $?
-else
-    python app/main.py
-fi
-
+python app/main.py

@@ -25,6 +25,8 @@ services:
       - ../.././:/code
     env_file:
       - ./back/.env
+    environment:
+        - FLASK_APP=main.py
     ports:
       - "5001:5001"
       - "9001:9001"

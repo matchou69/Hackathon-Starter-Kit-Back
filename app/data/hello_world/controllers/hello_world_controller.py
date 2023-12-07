@@ -1,36 +1,50 @@
+""" Routes for the endpoint 'hello_world'"""
+
 from flask import Blueprint, request
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
-from data.hello_world.models.hello_world_model import HelloWorldModel
-from data.hello_world.schemas.hello_world_schema import HelloWorldSchema
-from shared.utils.crud_helper import BaseCRUDHelper
+from data.hello_world.models import HelloWorldModel
+from data.hello_world.schemas import HelloWorldSchema
+from marshmallow import ValidationError
+from shared import db
 
-NAME = "helloworld"
-blueprint = Blueprint(f"{NAME}_blueprint", __name__)
-
-crud = BaseCRUDHelper(HelloWorldModel, HelloWorldSchema())
+blueprint = Blueprint(f"hello_world_blueprint", __name__)
 
 
-@blueprint.get(f"/{NAME}/<uuid:id>")
-def get_hello_world(id):
-    return crud.handle_get(id)
+@blueprint.get(f"/hello_world/<int:id>")
+def get_hello_world(id: str):
+    """GET route code goes here"""
+    entity: HelloWorldModel = db.session.query(HelloWorldModel).get(id)
+    if entity is None:
+        return "Goodby, World.", 404
+    return entity.message, 200
 
 
-@blueprint.post(f"/{NAME}/")
+@blueprint.post(f"/hello_world/")
 def post_hello_world():
-    data = request.get_json()
-    return crud.handle_post(data)
+    """POST route code goes here"""
+    payload = request.get_json()
+    try:
+        entity: HelloWorldModel = HelloWorldSchema().load(payload)
+    except ValidationError as error:
+        return f"The payload does't correspond to a valid HelloWorldModel: {error}", 400
+    db.session.add(entity)
+    db.session.commit()
+    return HelloWorldSchema().dump(entity), 200
 
 
-@blueprint.delete(f"/{NAME}/<uuid:id>")
-def delete_hello_world(id):
-    return crud.handle_delete(id)
+@blueprint.delete(f"/hello_world/<int:id>")
+def delete_hello_world(id: str):
+    """DELETE route code goes here"""
+    return "Unimplemented", 501
 
 
-@blueprint.put(f"/{NAME}/<uuid:id>")
-@jwt_required()
-def update_hello_world(id):
-    current_user = get_jwt_identity()
-    print(current_user + " - " + get_jwt()["custom_data"], flush=True)
-    data = request.get_json()
-    return crud.handle_put(id, data)
+@blueprint.put(f"/hello_world/<int:id>")
+def put_hello_world(id: str):
+    """PUT route code goes here"""
+    return "Unimplemented", 501
+
+
+@blueprint.patch(f"/hello_world/<int:id>")
+def patch_hello_world(id: str):
+    """PATCH route code goes here"""
+    return "Unimplemented", 501

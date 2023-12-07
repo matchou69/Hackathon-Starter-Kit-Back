@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import List, Dict
 from uuid import uuid4
 
-from .errors import OneVariableErrorDict, EnvironmentVariableNotFound, EnvironmentErrorDict, \
+from .errors import OneVariableErrorData, EnvironmentVariableNotFound, EnvironmentErrorData, \
     SeveralEnvironmentVariablesNotFound
 
 
@@ -28,21 +28,21 @@ class EnvironmentGetter:
         self.scopes: Dict[int, EnvironmentGetter.Scope] = dict()
         self.size = 0
 
-    def get(self, variable_name, description=None, required=True, _scope: Scope | None = None):
+    def get(self, variable_name, description=None, required=True, _scope: Scope | None = None) -> str:
         value = os.getenv(variable_name)
         self.variables.append(variable_name)
         self.required_list.append(required)
         self.values.append(value)
         self.descriptions.append(description)
 
-        current_index = self.size
-        self.size += 1
         if _scope is not None:
-            self.scopes[current_index] = _scope
+            self.scopes[self.size] = _scope
+        self.size += 1
 
         return value
 
-    def get_or_fail(self, variable_name, description=None):
+    @staticmethod
+    def get_or_fail(variable_name, description=None) -> str:
         value = os.getenv(variable_name)
         if value is None:
             raise EnvironmentVariableNotFound(variable_name, description)
@@ -60,10 +60,10 @@ class EnvironmentGetter:
         if len(error_items) == 0:
             return
 
-        errors_scoped_dict: defaultdict[EnvironmentGetter.Scope, List[OneVariableErrorDict]] = defaultdict(list)
-        errors_not_scoped: List[OneVariableErrorDict] = []
+        errors_scoped_dict: defaultdict[EnvironmentGetter.Scope, List[OneVariableErrorData]] = defaultdict(list)
+        errors_not_scoped: List[OneVariableErrorData] = []
         for i, (variable, required, value, description) in error_items:
-            variable_error: OneVariableErrorDict = {
+            variable_error: OneVariableErrorData = {
                 "variable": variable,
                 "description": description
             }
@@ -71,7 +71,7 @@ class EnvironmentGetter:
                 errors_scoped_dict[self.scopes[i]].append(variable_error)
             else:
                 errors_not_scoped.append(variable_error)
-        errors: EnvironmentErrorDict = {
+        errors: EnvironmentErrorData = {
             "errors_scoped": [{
                 "scope_description": scope.description,
                 "variables": variable_errors

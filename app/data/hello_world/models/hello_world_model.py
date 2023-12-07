@@ -1,12 +1,15 @@
 import sqlalchemy
-from sqlalchemy import Column, UUID, String
 
 from shared import db
+from sqlalchemy import Column, UUID, String, Integer
 
 
 class HelloWorldModel(db.Model):
-    __tablename__ = "helloworld"
+    __tablename__ = "hello_world"
     id = Column(
-        UUID, primary_key=True, unique=True, server_default=sqlalchemy.text("gen_random_uuid()"), nullable=False
+        Integer,
+        primary_key=True,
+        unique=True,
+        nullable=False
     )
-    name = Column(String())
+    message = Column(String(100))

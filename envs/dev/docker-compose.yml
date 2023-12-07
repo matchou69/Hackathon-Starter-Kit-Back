@@ -35,7 +35,6 @@ services:
       - postgres
     environment:
       - FLASK_APP=main.py
-      - MIGRATION=1 # set 1 if you want to migrate
     ports:
       - "5678:5678"
       - "5001:5001"

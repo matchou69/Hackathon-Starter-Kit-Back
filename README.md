@@ -25,8 +25,6 @@ Genee est une entreprise Française, les documentations et les commits sont en f
 │   │ └── Contient toute la logique de l'application
 │   ├── data
 │   │   └── Données (modèles SQLAlchemy) avec leur logique d'accès/modification (routes API, schémas)
-│   ├── errors
-│   │   └── Erreurs personnalisées de l'application
 │   ├── shared
 │   │   └── Logique d'initialisation de l'application, modules partagés (fonctions utilitaires, services)
 │   └── main.py
@@ -38,19 +36,19 @@ Genee est une entreprise Française, les documentations et les commits sont en f
 │   ├── dev
 │   ├── prod
 │   └── shared
-├── scripts
-│   └── Utilitaires de lancement de l'application et liés aux tests
-└── migrations
+└── scripts
+    └── Utilitaires de lancement de l'application et liés aux tests
 ```
 Dans le répertoire `data`, chaque sous-répertoire représente une fonctionnalité (entité ou groupe d'entités reliées) distincte de l'application.
-Chaque module contient les modules suivants :
+Chaque module peut contenir les modules suivants :
 
-- `controller` : Définitions des points d'accès API pour le module. C'est ici que les requêtes HTTP sont reçues et dirigées
+- `controllers` : Définitions des points d'accès API pour le module. C'est ici que les requêtes HTTP sont reçues et dirigées
   vers les fonctions appropriés. Les routes sont regroupées dans un `flask.Blueprint`
-- `model` : Modèles de données **SQLAlchemy** associés à la fonctionnalité.
-- `schema` : Schémas qui sont utilisés pour la validation des données entrantes pour le module.
-- `service` : Classe utilitaire pour la logique métier associée à la fonctionnalité
-- `test`
+- `models` : Modèles de données **SQLAlchemy** associés à la fonctionnalité.
+- `schemas` : Schémas qui sont utilisés pour la validation des données entrantes pour le module.
+- `services` : Classes utilitaire pour la logique métier associée à la fonctionnalité
+- `test`: Contient les tests unitaires liés à la fonctionnalité
+
 
 ## Installation
 
@@ -58,9 +56,20 @@ Chaque module contient les modules suivants :
 
 Pour exécuter cette application, vous devez avoir Docker et Docker Compose installés sur votre système.
 
-#### Installation de Docker
+#### Installation de WSL2
 
-##### Sur Linux
+Dans Powershell (mode administrateur):
+
+```bash
+wsl --install
+```
+
+#### Installation de Docker Desktop
+
+L'installation des utilitaires Docker sur Windows se fait grâce à l'application `Docker Desktop` \
+Référence: https://docs.docker.com/desktop/install/windows-install/
+
+#### Installation de Docker
 
 1. Mettez à jour l'index du paquet `apt` :
    ```sh
@@ -84,15 +93,7 @@ Pour exécuter cette application, vous devez avoir Docker et Docker Compose inst
    sudo apt-get install docker-ce
    ```
 
-##### Sur Mac
-
-1. Téléchargez Docker Desktop pour Mac depuis [Docker Hub](https://hub.docker.com/editions/community/docker-ce-desktop-mac/).
-2. Ouvrez le fichier `.dmg` téléchargé et glissez l'icône de Docker dans votre dossier `Applications`.
-3. Ouvrez Docker Desktop depuis vos `Applications`.
-
 #### Installation de Docker Compose
-
-##### Sur Linux
 
 1. Téléchargez la version actuelle de Docker Compose :
    ```sh
@@ -102,10 +103,6 @@ Pour exécuter cette application, vous devez avoir Docker et Docker Compose inst
    ```sh
    sudo chmod +x /usr/local/bin/docker-compose
    ```
-
-##### Sur Mac
-
-Docker Compose est déjà inclus dans Docker Desktop pour Mac, donc aucune étape supplémentaire n'est nécessaire.
 
 ### Lancement de l'application
 
@@ -122,37 +119,76 @@ Une fois dans le répertoire "dev", exécutez la commande suivante pour démarre
 Compose :
 
 ```sh
-docker-compose up
+docker-compose up --build
 ```
 
 Une fois l'application démarrée, vous pouvez accéder à celle-ci en faisant vos requêtes
-à `http://localhost:5001/api/endpoint`.
+à `http://localhost:5001/api/<ROUTE>`.
+
 
 ## Variables d'Environnement
 
-Le projet utilise la variable d'environnement suivante :
+Le projet utilise les variable d'environnement suivantes:
 
-- `MIGRATIONS` : Cette variable détermine si des migrations doivent être effectuées sur la base de données. Mettez-la
-  à `1` pour activer les migrations
+- `DB_USER`: Nom de l'utilisateur BDD
+- `DB_PASS`: Mot de passe de l'utilisateur BDD
+- `DB_NAME`: Nom de la BDD
+- `DB_IP`: Adresse de la BDD
+- `MIGRATIONS` : Cette variable détermine si des migrations doivent être effectuées sur la base de données.
+  Mettez-la à `1` pour activer les migrations et à `0` pour les désactiver.
 
-et à `0` pour les désactiver.
+Ces variables sont à définir dans un fichier .env, situé à còté du Dockerfile de son environnement (`envs/dev/back/.env` et `envs/prod/back/.env`)\
+Comme les .env contiennent souvent des données sensibles, ces fichiers ne sont pas versionnés.\
+Pour démarrer le développement, créer un `.env` en copiant le `.env.example` situé au même endroit.
 
-```
-### Lancement de l'application
+## Lancement de l'application en mode développement
 
 Ouvrez une invite de commande ou un terminal.
-
-- lancer les docker
 
 ```shell
 docker-compose -f envs/dev/docker-compose.yml up 
 ``` 
 
-sans oublier le .env prévu pour ``envs/dev/back/.env``
+Ne pas oublier de créer le fichier `.env` à ``envs/dev/back/.env``
 
-# Configuration de Pycharm
 
-Pycharm est l'IDE Python de jetbrains, pour avoir acces au programme par l'IDE sans erreurs demande quelques
+## Gestion des dépendances
+
+La gestion des dépendances du projet utilise pip-tools. Cet outil permet, à la manière des package-lock.json sur les
+projets Node, de freeze la totalité des dépendances (directes et indirectes) du projet.
+
+pour installer pip-tools :
+```shell
+pip install pip-tools
+```
+
+Les dépendances directes sont spécifiées dans le fichier `pyproject.toml`à la racine du projet.
+
+Les fichiers requirements.txt et requirements-dev.txt situés dans le dossier app ne doivent pas être modifiés manuellement.
+
+En cas de changement de dépendance directe (ajout, modification, suppression) :
+- Modifier le fichier pyproject.toml
+  - Si la dépendance sert au fonctionnement nominal de l'application
+    - Toucher à la section [project] > dependencies
+    - Lancer les commandes suivantes :
+      ```shell
+      pip-compile --upgrade --output-file=app/requirements.txt pyproject.toml
+      pip-compile --upgrade --extra=dev --output-file=app/requirements-dev.txt pyproject.toml
+      ```
+    - Si la dépendance sert uniquement à l'environnement de dev ou de CI
+      - Toucher à la section [project.optional-dependencies] > dependencies
+      - Lancer la commande suivante :
+      ```shell
+      pip-compile --upgrade --extra=dev --output-file=app/requirements-dev.txt pyproject.toml 
+      ```
+La commande pip-compile permet de générer les fichiers requirements.txt et requirements-dev.txt, qui contiennent les dépendances
+directes et indirectes et leurs versions figées.
+
+
+
+## Configuration de Pycharm
+
+Pycharm est l'IDE Python de jetbrains, pour avoir acces au programme par l'IDE sans erreurs demande quelque 
 modification
 
 > **NOTE**: cette configuration a été faites avec la nouvelle UI de Pycharm elle peut ne pas fonctionner sur l'ancienne
@@ -189,19 +225,96 @@ du genre ``1 of 4`` ou bien ``4``, cliquez dessus.\
 Cochez ``db_dev`` et ``All schemas`` dans le menu déroulant de ``db_dev``\
 Vous pouvez maintenant accéder à toutes vos table dans ``postgres@localhost > db_dev > public > tables``
 
-# Explication des scripts
+## Explication des scripts
 
-- ``tester.sh`` permet de tester l'applicatopm
-    - les arguments :
-        - -d permet de définir si les dockers sont dépendant du programme,
-          si utilisé les dockers se lanceront par le testers et vous n'aurez que le retour du tester en lui meme
-        - sinon doit etre rattaché au docker-compose deja lancé
-- ``application_restart.sh`` permet quand les dockers sont lancés, a l'interruption de ceux-ci par le billet du
-  raccourcis ctrl-c ce relance tout seul en nettoyant la base de donnée
+Les scripts sont situés dans le dossier ``scripts/``
+- ``application_restart.sh``
+  - Relance l'application tout en effaçant les données de la base de données
+  - Fait en sorte que l'application se relance automatiquement apres un Ctrl-C
+- ``*.http``
+  - Permet de prototyper des requetes pour tester l'application et peupler la base de données facilement exactement comme Postman
+  - Pycharm permet de lancer chaque requete du fichier indépendamment (bouton 'Play' a gauche de la requete) ou toutes les requetes (bouton 'Double Play' en haut du fichier)
+  - Important : les requêtes doivent être séparées par une ligne avec 3 hashtags ('###')
 
-# Mise en place du format par lint
+## Mise en place du format par lint
 
 ``black`` permet de formatter le code. Pour le relier à la fonction ``format code`` de l'IDE:
 
 - S'assurer que Black est bien installé : ``python3 -m pip install Black``
 - Aller dans ``Settings... > Tools > Black`` et activer ``on code reformat``
+
+
+
+## Schemas
+
+Les schemas marshamallow remplissent deux roles en meme temps:
+- __Serialisation* / deserialisation__** des donnees
+- __Validation__ des donnees
+
+*Sérialisées ->  __Objets Python__\
+**Désérialisées ->  __Dictionnaires Python__
+
+
+### Vocabulaire
+
+Dans marshmallow '__load__' = __deserialize__ et '__dump__' = __serialize__:
+
+__[payload: JSON]__ ----load--->  __[instance: Object]__\
+__[payload: JSON]__ <---dump----  __[instance: Object]__
+
+### Definir un schema
+
+- Un schema __marshmallow__ 'pur'
+
+```python3
+class Album:
+    title: str
+    release_date: datetime.date
+
+
+class AlbumSchema(Schema):
+    title = fields.Str()
+    release_date = fields.Date()
+```
+
+- Un schema __marshmallow_sqlalchemy__
+
+```python3
+class AlbumModel:
+    title: Column(String(255))
+    release_date: Column(Date())
+
+class AlbumSchema(SQLAlchemySchema):
+    class Meta:
+        model = AlbumModel
+        load_instance = True  # Optional: deserialize to model instances
+        include_fk = True # Optional: To include foreign fields
+        include_relationships = True # Optional: To include relationships (become a fields.Related not fields.Nested)
+
+    title = auto_field()
+    release_date = auto_field()
+
+# Ou avec SQLAlchemyAutoSchema
+
+class AlbumSchema(SQLAlchemySchema):
+    class Meta:
+        model = AlbumModel
+        load_instance = True  # Optional: deserialize to model instances
+        include_fk = True # Optional: To include foreign fields
+        include_relationships = True # Optional: To include relationships (become a fields.Related not fields.Nested)
+```
+
+Note: SQLAlchemySchema n'inclut pas les `sqlalchemy.relationship()`, juste les `sqlalchemy.Column()`
+
+Regarder aussi:
+- [marshmallow.fields.Nested()](https://marshmallow.readthedocs.io/en/stable/nesting.html)
+- [read_only et dump_only](https://marshmallow.readthedocs.io/en/stable/quickstart.html#read-only-and-write-only-fields)
+- [data_key](https://marshmallow.readthedocs.io/en/stable/quickstart.html#specifying-serialization-deserialization-keys)
+  pour changer le nom d'un field du dictionnaire en un autre nom dans l'objet
+
+
+## Services
+
+Les services sont des classes utilitaires regroupant la logique métier propre a une entité\
+Leur role est d'encapsuler cette logique (creer des méthodes dont le nom explicite la tache abstrite effectuée) et
+donc rendre le code des controllers clair
