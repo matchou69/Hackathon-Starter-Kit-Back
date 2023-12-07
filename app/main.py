@@ -11,7 +11,7 @@ app = create_app(environment)
 
 if __name__ == "__main__":
     load_dotenv()
-    if environment.DEBUG == "1":
+    if environment.DEBUG:
         import debugpy
 
         debugpy.listen(("0.0.0.0", 5678))
