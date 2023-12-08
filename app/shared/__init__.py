@@ -7,16 +7,18 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import ValidationError
 
+from environment import BaseEnvironment
+
 db: SQLAlchemy = SQLAlchemy()
 migrate = Migrate()
 
-def create_app(environment):
+def create_app(environment: BaseEnvironment):
     app = Flask(__name__)
     app.config.from_object(environment)
-    print(f"Using {app.config['DB_NAME']}")
+    print(f"Using {environment.DB_NAME}")
 
     db.init_app(app)
-    if app.config["MIGRATION"] == "1":
+    if environment.MIGRATION == "1":
         migrate.init_app(app, db)
 
     handler = logging.StreamHandler(sys.stdout)

@@ -1,16 +1,13 @@
-from dotenv import load_dotenv
-
-from environment import AppEnvironment
+from environment import GetAppEnvironment
 from shared import create_app
 
-environment = AppEnvironment.get()
+environment = GetAppEnvironment.get()
 
 print(f"Using environment {environment.ENV}")
 app = create_app(environment)
 
 
 if __name__ == "__main__":
-    load_dotenv()
     if environment.DEBUG:
         import debugpy
 

@@ -52,7 +52,7 @@ class ProductionEnvironment(BaseEnvironment):
         self.ENV = "prod"
 
 
-class AppEnvironment:
+class GetAppEnvironment:
     _loaded_environment: BaseEnvironment | None = None
 
     @classmethod

@@ -49,60 +49,155 @@ Chaque module peut contenir les modules suivants :
 - `services` : Classes utilitaire pour la logique métier associée à la fonctionnalité
 - `test`: Contient les tests unitaires liés à la fonctionnalité
 
-
-## Installation
+## Environnement de développement
 
 ### Prérequis
 
-Pour exécuter cette application, vous devez avoir Docker et Docker Compose installés sur votre système.
+- Le sous-système Linux for Windows WSL2 est installé
+  - dans Windows : Paramètres -> Applications -> Fonctionnalités facultatives -> Plus de fonctionnalités Windows -> cocher Sous-système Windows pour Linux puis redémarrer l'ordinateur
+  - <https://learn.microsoft.com/fr-fr/windows/wsl/install>
+- Git est installé sur la WSL2
+  - Si vous êtes en télétravail, pensez à désactiver le VPN le temps de l'installation de Git
+- Docker et Docker Compose sont installés sur la WSL2
+  - https://medium.com/twodigits/install-docker-on-wsl-2-with-vpn-support-to-replace-docker-for-windows-45b8e200e171
+- Python 3.10 est installé sur la WSL2
+  - Recommandation : Utiliser pyenv et pyenv-virtualenv pour gérer vos installation de Python et vos environnements virtuels Python
+    - <https://github.com/pyenv/pyenv>
+      - Utiliser l’installeur automatique : <https://github.com/pyenv/pyenv-installer>
+    - <https://github.com/pyenv/pyenv-virtualenv>
+    - Ajouter les lignes suivantes au .bashrc
+      ```shell
+      export PYENV_ROOT="$HOME/.pyenv"
+      command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+      eval "$(pyenv init -)"
+      ```
+    - Si vous avez choisi une distribution Debian, les librairies complémentaires suivantes nécessaires au fonctionnement du virtualenv doivent être installées:
+      ```shell
+      sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev liblzma-dev libpq-dev
+      ```
 
-#### Installation de WSL2
+- Le repository du test est clôné via le lien HTTPS
 
-Dans Powershell (mode administrateur):
+### Environnement virtuel Python
 
-```bash
-wsl --install
+#### Création de l'environnement
+
+Il est recommandé de créer un environnement virtuel Python dédié au projet afin qu'il soit utilisé en tant qu'interpréteur sur votre IDE.
+Pour cela, utiliser la librairie pyenv-virtualenv avec la commande suivante :
+
+```shell
+pyenv virtualenv <python_version> <virtualenv_name>
 ```
 
-#### Installation de Docker Desktop
+Exemple :
 
-L'installation des utilitaires Docker sur Windows se fait grâce à l'application `Docker Desktop` \
-Référence: https://docs.docker.com/desktop/install/windows-install/
+```shell
+pyenv virtualenv 3.10.10 stsi-test
+```
 
-#### Installation de Docker
+Basculer ensuite le terminal sur l'environnement virtual qui vient d'être créé :
 
-1. Mettez à jour l'index du paquet `apt` :
-   ```sh
-   sudo apt-get update
-   ```
-2. Installez les paquets permettant à `apt` d'utiliser un dépôt sur HTTPS :
-   ```sh
-   sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
-   ```
-3. Ajoutez la clé GPG officielle de Docker :
-   ```sh
-   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-   ```
-4. Ajoutez le dépôt Docker à vos sources `APT` :
-   ```sh
-   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-   ```
-5. Mettez à jour l'index du paquet `apt` et installez Docker CE :
-   ```sh
-   sudo apt-get update
-   sudo apt-get install docker-ce
-   ```
+```shell
+pyenv activate <virtualenv_name>
+```
 
-#### Installation de Docker Compose
+Lier le répertoire courant à l'environnement virtual (fichier .python-version) : 
 
-1. Téléchargez la version actuelle de Docker Compose :
-   ```sh
-   sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-   ```
-2. Appliquez les permissions d'exécution au binaire :
-   ```sh
-   sudo chmod +x /usr/local/bin/docker-compose
-   ```
+```shell
+pyenv local <virtualenv_name>
+```
+
+#### Installation des dépendances et des configurations
+
+Installer les dépendances Python sur l'environnement virtual en exécutant la commande suivante :
+
+```shell
+pip install -r requirements.txt -r requirements-dev.txt
+```
+
+Installer les pre-commits Git avec la commande suivante :
+
+```shell
+pre-commit install
+```
+
+### Environnement Docker
+L'installation de Docker se fait directement dans la WSL2 sans Docker Desktop for Windows depuis le passage en licence payante de cette solution.
+
+La procédure se base sur l'article suivant : [Install Docker in WSL 2 without Docker Desktop](https://nickjanetakis.com/blog/install-docker-in-wsl-2-without-docker-desktop)
+
+#### Suppression de l'installation actuelle
+Si une ancienne installation de Docker a été faite, lancez les commandes suivantes pour la désinstaller.
+
+```shell
+# WSL
+sudo apt remove docker-ce docker-ce-cli containerd.io
+sudo rm -rf /mnt/wsl/shared-docker
+sudo rm -rf /etc/docker
+sudo rm -rf /var/lib/docker
+```
+
+Supprimer le bloc suivant du fichier `~/.bashrc`
+```shell
+DOCKER_DISTRO="Ubuntu"
+DOCKER_DIR=/mnt/wsl/shared-docker
+DOCKER_SOCK="$DOCKER_DIR/docker.sock"
+export DOCKER_HOST="unix://$DOCKER_SOCK"
+if [ ! -S "$DOCKER_SOCK" ]; then
+    mkdir -pm o=,ug=rwx "$DOCKER_DIR"
+    chgrp docker "$DOCKER_DIR"
+    /mnt/c/Windows/System32/wsl.exe -d $DOCKER_DISTRO sh -c "nohup sudo -b dockerd < /dev/null > $DOCKER_DIR/dockerd.log 2>&1"
+fi
+```
+
+#### Nouvelle installation de Docker
+
+Exécuter les commandes suivantes pour installer Docker :
+```shell
+# WSL
+# Install Docker, you can ignore the warning from Docker about using WSL
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Add your user to the Docker group
+sudo usermod -aG docker $USER
+
+# Install Docker Compose v2
+sudo apt-get update && sudo apt-get install docker-compose-plugin
+
+# Sanity check that both tools were installed successfully
+docker --version
+docker compose version
+
+# Using Ubuntu 22.04 or Debian 10 / 11? You need to do 1 extra step for iptables
+# compatibility, you'll want to choose option (1) from the prompt to use iptables-legacy.
+sudo update-alternatives --config iptables
+```
+
+Ajouter le contenu suivant dans votre fichier `~/.profile` :
+```shell
+if grep -q "microsoft" /proc/version > /dev/null 2>&1; then
+    if service docker status 2>&1 | grep -q "is not running"; then
+        wsl.exe --distribution "${WSL_DISTRO_NAME}" --user root --exec /usr/sbin/service docker start > /dev/null 2>&1
+    fi
+fi
+```
+
+Stopper votre WSL en lançant depuis Powershell la commande suivante :
+```shell
+# Powershell
+wsl --shutdown
+```
+Puis relancer un terminal Debian/Ubuntu pour redémarrer la WSL2
+
+#### Build des images
+
+Lancer les commandes suivantes :
+
+```shell
+cd envs/dev
+docker compose build
+```
 
 ### Lancement de l'application
 
@@ -242,79 +337,3 @@ Les scripts sont situés dans le dossier ``scripts/``
 
 - S'assurer que Black est bien installé : ``python3 -m pip install Black``
 - Aller dans ``Settings... > Tools > Black`` et activer ``on code reformat``
-
-
-
-## Schemas
-
-Les schemas marshamallow remplissent deux roles en meme temps:
-- __Serialisation* / deserialisation__** des donnees
-- __Validation__ des donnees
-
-*Sérialisées ->  __Objets Python__\
-**Désérialisées ->  __Dictionnaires Python__
-
-
-### Vocabulaire
-
-Dans marshmallow '__load__' = __deserialize__ et '__dump__' = __serialize__:
-
-__[payload: JSON]__ ----load--->  __[instance: Object]__\
-__[payload: JSON]__ <---dump----  __[instance: Object]__
-
-### Definir un schema
-
-- Un schema __marshmallow__ 'pur'
-
-```python3
-class Album:
-    title: str
-    release_date: datetime.date
-
-
-class AlbumSchema(Schema):
-    title = fields.Str()
-    release_date = fields.Date()
-```
-
-- Un schema __marshmallow_sqlalchemy__
-
-```python3
-class AlbumModel:
-    title: Column(String(255))
-    release_date: Column(Date())
-
-class AlbumSchema(SQLAlchemySchema):
-    class Meta:
-        model = AlbumModel
-        load_instance = True  # Optional: deserialize to model instances
-        include_fk = True # Optional: To include foreign fields
-        include_relationships = True # Optional: To include relationships (become a fields.Related not fields.Nested)
-
-    title = auto_field()
-    release_date = auto_field()
-
-# Ou avec SQLAlchemyAutoSchema
-
-class AlbumSchema(SQLAlchemySchema):
-    class Meta:
-        model = AlbumModel
-        load_instance = True  # Optional: deserialize to model instances
-        include_fk = True # Optional: To include foreign fields
-        include_relationships = True # Optional: To include relationships (become a fields.Related not fields.Nested)
-```
-
-Note: SQLAlchemySchema n'inclut pas les `sqlalchemy.relationship()`, juste les `sqlalchemy.Column()`
-
-Regarder aussi:
-- [marshmallow.fields.Nested()](https://marshmallow.readthedocs.io/en/stable/nesting.html)
-- [read_only et dump_only](https://marshmallow.readthedocs.io/en/stable/quickstart.html#read-only-and-write-only-fields)
-- [data_key](https://marshmallow.readthedocs.io/en/stable/quickstart.html#specifying-serialization-deserialization-keys)
-  pour changer le nom d'un field du dictionnaire en un autre nom dans l'objet
-
-
-## Services
-
-Les services sont des classes utilitaires regroupant la logique métier propre a une entité\
-Leur role est d'encapsuler cette logique (creer des méthodes dont le nom explicite la tache abstrite effectuée) et
-donc rendre le code des controllers clair
