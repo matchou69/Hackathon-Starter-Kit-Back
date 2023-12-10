@@ -1,7 +1,6 @@
-import sqlalchemy
+from sqlalchemy import Column, String, Integer
 
 from shared import db
-from sqlalchemy import Column, UUID, String, Integer
 
 
 class HelloWorldModel(db.Model):

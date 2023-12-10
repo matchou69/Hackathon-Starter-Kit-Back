@@ -22,7 +22,7 @@ dependencies = [
 
 [pyproject.optional-dependencies]
 dev = [
-    'pytest',
+    'debugpy'
 ]
 
 [tool.setuptools]
