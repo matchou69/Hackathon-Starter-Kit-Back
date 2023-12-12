@@ -1,10 +1,10 @@
 from shared import create_app
 import os
 from dotenv import load_dotenv
-
 from config import TestingConfig, ProductionConfig, DevelopmentConfig
 
 load_dotenv()
+
 
 match os.getenv('ENV'):
     case 'dev':

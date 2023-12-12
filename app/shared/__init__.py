@@ -28,8 +28,11 @@ def create_app(config):
 
     url_prefix = "/api"
 
-    from data.hello_world.controllers import hello_world_blueprint
-    app.register_blueprint(hello_world_blueprint, url_prefix=url_prefix)
+    """from data.hello_world.controllers import hello_world_blueprint
+    app.register_blueprint(hello_world_blueprint, url_prefix=url_prefix)"""
+
+    from data.auth.controllers import auth_blueprint
+    app.register_blueprint(auth_blueprint, url_prefix=url_prefix)
 
     @app.errorhandler(ValidationError)
     def handle_custom_error(error):

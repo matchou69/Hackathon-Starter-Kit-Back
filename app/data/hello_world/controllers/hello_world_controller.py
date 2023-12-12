@@ -9,7 +9,9 @@ from shared import db
 
 NAME = 'hello_world'
 
+
 hello_world_blueprint = Blueprint(f"{NAME}_hello_world_blueprint", __name__)
+
 
 
 @hello_world_blueprint.get(f"/hello_world/<int:id>")
