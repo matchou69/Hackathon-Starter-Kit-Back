@@ -33,6 +33,9 @@ def create_app(config):
 
     from data.auth.controllers import auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix=url_prefix)
+    from data.events.controllers import events_blueprint
+    app.register_blueprint(events_blueprint, url_prefix=url_prefix)
+    
 
     @app.errorhandler(ValidationError)
     def handle_custom_error(error):
