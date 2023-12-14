@@ -2,6 +2,7 @@ from shared import create_app
 import os
 from dotenv import load_dotenv
 from config import TestingConfig, ProductionConfig, DevelopmentConfig
+from flask_cors import CORS
 
 load_dotenv()
 
@@ -19,6 +20,8 @@ match os.getenv('ENV'):
 print(f"Using environment {config.ENV}")
 
 app = create_app(config)
+CORS(app)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5001", debug=True)
